@@ -36,10 +36,23 @@ const STORAGE_KEYS = {
   INITIALIZED: 'okul_devam_initialized_v8',
 };
 
-// Event emitter for cross-component reactive updates within client
-const listeners: Array<() => void> = [];
+// Cross-component listeners
+const listeners = new Set<() => void>();
+let notifyScheduled = false;
+
 function notifyListeners() {
-  listeners.forEach((listener) => listener());
+  if (notifyScheduled) return;
+  notifyScheduled = true;
+  setTimeout(() => {
+    notifyScheduled = false;
+    listeners.forEach((listener) => {
+      try {
+        listener();
+      } catch (e) {
+        console.warn('Listener error:', e);
+      }
+    });
+  }, 10);
 }
 
 function getStoredData<T>(key: string, defaultValue: T): T {
@@ -48,7 +61,6 @@ function getStoredData<T>(key: string, defaultValue: T): T {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
   } catch (e) {
-    console.error(`Error reading ${key} from localStorage`, e);
     return defaultValue;
   }
 }
@@ -59,21 +71,25 @@ function setStoredData<T>(key: string, value: T): void {
     localStorage.setItem(key, JSON.stringify(value));
     notifyListeners();
   } catch (e) {
-    console.error(`Error writing ${key} to localStorage`, e);
+    console.warn(`Error writing ${key} to localStorage`, e);
   }
 }
 
 export function initializeStoreIfEmpty() {
   if (typeof window === 'undefined') return;
-  const isInit = localStorage.getItem(STORAGE_KEYS.INITIALIZED);
-  if (!isInit) {
-    const { attendance, substitutions } = generateInitialLogs();
-    const scheduleSlots = generateInitialScheduleSlots();
-    localStorage.setItem(STORAGE_KEYS.TEACHERS, JSON.stringify(INITIAL_TEACHERS));
-    localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(attendance));
-    localStorage.setItem(STORAGE_KEYS.SUBSTITUTIONS, JSON.stringify(substitutions));
-    localStorage.setItem(STORAGE_KEYS.SCHEDULE, JSON.stringify(scheduleSlots));
-    localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
+  try {
+    const isInit = localStorage.getItem(STORAGE_KEYS.INITIALIZED);
+    if (!isInit) {
+      const { attendance, substitutions } = generateInitialLogs();
+      const scheduleSlots = generateInitialScheduleSlots();
+      localStorage.setItem(STORAGE_KEYS.TEACHERS, JSON.stringify(INITIAL_TEACHERS));
+      localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(attendance));
+      localStorage.setItem(STORAGE_KEYS.SUBSTITUTIONS, JSON.stringify(substitutions));
+      localStorage.setItem(STORAGE_KEYS.SCHEDULE, JSON.stringify(scheduleSlots));
+      localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
+    }
+  } catch (e) {
+    console.warn('Init error:', e);
   }
 }
 
@@ -96,20 +112,11 @@ export function useAppStore() {
       generateInitialScheduleSlots()
     );
 
-    // Auto-sanitize teacher names to completely eliminate any legacy artifacts
-    let needsUpdate = false;
+    // Sanitize in-memory
     const sanitizedTeachers = storedTeachers.map((t) => {
       const cleaned = cleanTeacherName(t.name);
-      if (cleaned && cleaned !== t.name) {
-        needsUpdate = true;
-        return { ...t, name: cleaned };
-      }
-      return t;
+      return cleaned && cleaned !== t.name ? { ...t, name: cleaned } : t;
     });
-
-    if (needsUpdate) {
-      setStoredData(STORAGE_KEYS.TEACHERS, sanitizedTeachers);
-    }
 
     setTeachersState(sanitizedTeachers);
     setAttendanceState(storedAttendance);
@@ -122,27 +129,34 @@ export function useAppStore() {
     refreshData();
 
     // Check Cloud status
-    const cloudAvailable = isSupabaseConfigured();
-    setIsCloudConnected(cloudAvailable);
+    let cloudAvailable = false;
+    try {
+      cloudAvailable = isSupabaseConfigured();
+      setIsCloudConnected(cloudAvailable);
+    } catch (e) {
+      console.warn('Supabase check notice:', e);
+    }
 
     // Fetch initial from cloud if connected
     if (cloudAvailable && supabase) {
-      fetchAllFromCloud().then((cloudData) => {
-        if (cloudData && (cloudData.teachers.length > 0 || cloudData.attendanceLogs.length > 0)) {
-          setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
-          setStoredData(STORAGE_KEYS.ATTENDANCE, cloudData.attendanceLogs);
-          setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
-          setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
-        }
-      });
+      fetchAllFromCloud()
+        .then((cloudData) => {
+          if (cloudData && (cloudData.teachers.length > 0 || cloudData.attendanceLogs.length > 0)) {
+            setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
+            setStoredData(STORAGE_KEYS.ATTENDANCE, cloudData.attendanceLogs);
+            setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
+            setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
+          }
+        })
+        .catch((err) => {
+          console.warn('Cloud sync initial fetch error:', err);
+        });
 
       // Realtime listener
-      const channel = supabase
-        .channel('schema-db-changes')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public' },
-          () => {
+      try {
+        const channel = supabase
+          .channel('schema-db-changes')
+          .on('postgres_changes', { event: '*', schema: 'public' }, () => {
             fetchAllFromCloud().then((cloudData) => {
               if (cloudData) {
                 setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
@@ -150,20 +164,24 @@ export function useAppStore() {
                 setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
                 setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
               }
-            });
-          }
-        )
-        .subscribe();
+            }).catch(() => {});
+          })
+          .subscribe();
 
-      return () => {
-        supabase?.removeChannel(channel);
-      };
+        return () => {
+          try {
+            supabase?.removeChannel(channel);
+          } catch (e) {}
+        };
+      } catch (e) {
+        console.warn('Realtime channel notice:', e);
+      }
     }
 
-    listeners.push(refreshData);
+    const handler = () => refreshData();
+    listeners.add(handler);
     return () => {
-      const idx = listeners.indexOf(refreshData);
-      if (idx !== -1) listeners.splice(idx, 1);
+      listeners.delete(handler);
     };
   }, [refreshData]);
 
@@ -179,7 +197,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.TEACHERS, updated);
 
     if (supabase) {
-      supabase.from('teachers').upsert(mapTeacherToDb(newTeacher)).then();
+      supabase.from('teachers').upsert(mapTeacherToDb(newTeacher)).then().catch(() => {});
     }
     return newTeacher;
   };
@@ -197,7 +215,7 @@ export function useAppStore() {
     if (supabase) {
       const updatedT = updated.find((t) => t.id === id);
       if (updatedT) {
-        supabase.from('teachers').upsert(mapTeacherToDb(updatedT)).then();
+        supabase.from('teachers').upsert(mapTeacherToDb(updatedT)).then().catch(() => {});
       }
     }
   };
@@ -207,7 +225,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.TEACHERS, updated);
 
     if (supabase) {
-      supabase.from('teachers').delete().eq('id', id).then();
+      supabase.from('teachers').delete().eq('id', id).then().catch(() => {});
     }
   };
 
@@ -223,7 +241,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.TEACHERS, updated);
 
     if (supabase) {
-      supabase.from('teachers').upsert(createdList.map(mapTeacherToDb)).then();
+      supabase.from('teachers').upsert(createdList.map(mapTeacherToDb)).then().catch(() => {});
     }
     return createdList;
   };
@@ -235,7 +253,7 @@ export function useAppStore() {
     const duplicateTeacher = teachers.find((t) => t.id === duplicateTeacherId);
     if (!primaryTeacher || !duplicateTeacher) return;
 
-    // 1. Merge Teacher Info (preserve phone, email, tcNo, branch)
+    // 1. Merge Teacher Info
     const updatedPrimary: Teacher = {
       ...primaryTeacher,
       phone: primaryTeacher.phone || duplicateTeacher.phone,
@@ -310,11 +328,13 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, updatedSchedule);
 
     if (supabase) {
-      supabase.from('teachers').upsert(mapTeacherToDb(updatedPrimary)).then();
-      supabase.from('teachers').delete().eq('id', duplicateTeacherId).then();
-      supabase.from('attendance_logs').upsert(updatedAttendance.map(mapAttendanceToDb)).then();
-      supabase.from('substitution_logs').upsert(updatedSubs.map(mapSubstitutionToDb)).then();
-      supabase.from('schedule_slots').upsert(updatedSchedule.map(mapScheduleSlotToDb)).then();
+      try {
+        supabase.from('teachers').upsert(mapTeacherToDb(updatedPrimary)).then().catch(() => {});
+        supabase.from('teachers').delete().eq('id', duplicateTeacherId).then().catch(() => {});
+        supabase.from('attendance_logs').upsert(updatedAttendance.map(mapAttendanceToDb)).then().catch(() => {});
+        supabase.from('substitution_logs').upsert(updatedSubs.map(mapSubstitutionToDb)).then().catch(() => {});
+        supabase.from('schedule_slots').upsert(updatedSchedule.map(mapScheduleSlotToDb)).then().catch(() => {});
+      } catch (e) {}
     }
   };
 
@@ -333,12 +353,11 @@ export function useAppStore() {
     );
 
     if (status === null) {
-      // Remove log (toggle off / cancel)
       updatedLogs = attendanceLogs.filter(
         (l) => !(l.teacherId === teacherId && l.date === date)
       );
       if (supabase) {
-        supabase.from('attendance_logs').delete().eq('teacher_id', teacherId).eq('date', date).then();
+        supabase.from('attendance_logs').delete().eq('teacher_id', teacherId).eq('date', date).then().catch(() => {});
       }
     } else if (existingIndex >= 0) {
       updatedLogs = [...attendanceLogs];
@@ -350,7 +369,7 @@ export function useAppStore() {
         updatedAt: nowStr,
       };
       if (supabase) {
-        supabase.from('attendance_logs').upsert(mapAttendanceToDb(updatedLogs[existingIndex])).then();
+        supabase.from('attendance_logs').upsert(mapAttendanceToDb(updatedLogs[existingIndex])).then().catch(() => {});
       }
     } else {
       const newLog: AttendanceLog = {
@@ -364,7 +383,7 @@ export function useAppStore() {
       };
       updatedLogs = [newLog, ...attendanceLogs];
       if (supabase) {
-        supabase.from('attendance_logs').upsert(mapAttendanceToDb(newLog)).then();
+        supabase.from('attendance_logs').upsert(mapAttendanceToDb(newLog)).then().catch(() => {});
       }
     }
 
@@ -379,7 +398,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.ATTENDANCE, updatedLogs);
 
     if (supabase) {
-      supabase.from('attendance_logs').delete().eq('date', date).in('teacher_id', teacherIds).then();
+      supabase.from('attendance_logs').delete().eq('date', date).in('teacher_id', teacherIds).then().catch(() => {});
     }
   };
 
@@ -391,14 +410,12 @@ export function useAppStore() {
     const nowStr = new Date().toISOString();
     const updatedMap = new Map<string, AttendanceLog>();
 
-    // Map existing
     attendanceLogs.forEach((log) => {
       updatedMap.set(`${log.date}_${log.teacherId}`, log);
     });
 
     const toUpsert: AttendanceLog[] = [];
 
-    // Update or insert
     teacherIds.forEach((teacherId) => {
       const key = `${date}_${teacherId}`;
       const existing = updatedMap.get(key);
@@ -429,7 +446,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.ATTENDANCE, updatedLogs);
 
     if (supabase && toUpsert.length > 0) {
-      supabase.from('attendance_logs').upsert(toUpsert.map(mapAttendanceToDb)).then();
+      supabase.from('attendance_logs').upsert(toUpsert.map(mapAttendanceToDb)).then().catch(() => {});
     }
   };
 
@@ -446,7 +463,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SUBSTITUTIONS, updated);
 
     if (supabase) {
-      supabase.from('substitution_logs').upsert(mapSubstitutionToDb(newSub)).then();
+      supabase.from('substitution_logs').upsert(mapSubstitutionToDb(newSub)).then().catch(() => {});
     }
     return newSub;
   };
@@ -456,7 +473,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SUBSTITUTIONS, updated);
 
     if (supabase) {
-      supabase.from('substitution_logs').delete().eq('id', id).then();
+      supabase.from('substitution_logs').delete().eq('id', id).then().catch(() => {});
     }
   };
 
@@ -467,7 +484,7 @@ export function useAppStore() {
     if (supabase) {
       const item = updated.find((s) => s.id === id);
       if (item) {
-        supabase.from('substitution_logs').upsert(mapSubstitutionToDb(item)).then();
+        supabase.from('substitution_logs').upsert(mapSubstitutionToDb(item)).then().catch(() => {});
       }
     }
   };
@@ -508,7 +525,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, updated);
 
     if (supabase) {
-      supabase.from('schedule_slots').upsert(mapScheduleSlotToDb(slotToSave)).then();
+      supabase.from('schedule_slots').upsert(mapScheduleSlotToDb(slotToSave)).then().catch(() => {});
     }
   };
 
@@ -526,7 +543,7 @@ export function useAppStore() {
 
     if (supabase) {
       const teacherSlots = updated.filter((s) => s.teacherId === teacherId);
-      supabase.from('schedule_slots').upsert(teacherSlots.map(mapScheduleSlotToDb)).then();
+      supabase.from('schedule_slots').upsert(teacherSlots.map(mapScheduleSlotToDb)).then().catch(() => {});
     }
   };
 
@@ -534,11 +551,11 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, newSlots);
 
     if (supabase && newSlots.length > 0) {
-      supabase.from('schedule_slots').upsert(newSlots.map(mapScheduleSlotToDb)).then();
+      supabase.from('schedule_slots').upsert(newSlots.map(mapScheduleSlotToDb)).then().catch(() => {});
     }
   };
 
-  // Intelligence: Check teacher availability for a given date and lesson hour, matching school levels
+  // Intelligence: Check teacher availability
   const getTeacherAvailability = (
     date: string,
     lessonHour: number,
@@ -546,20 +563,17 @@ export function useAppStore() {
   ): TeacherAvailability[] => {
     const dayOfWeek = getDayOfWeekFromDate(date);
 
-    // Map attendance on this date
     const dateAttendanceMap = new Map<string, string>();
     attendanceLogs
       .filter((l) => l.date === date)
       .forEach((l) => dateAttendanceMap.set(l.teacherId, l.status));
 
-    // Map past substitution count
     const teacherSubCountMap = new Map<string, number>();
     substitutionLogs.forEach((sub) => {
       const current = teacherSubCountMap.get(sub.substituteTeacherId) || 0;
       teacherSubCountMap.set(sub.substituteTeacherId, current + 1);
     });
 
-    // Target school levels taught by the absent teacher (e.g. Ortaokul, İlkokul, Anaokulu, Lise)
     let targetLevels: Set<SchoolLevel> | null = null;
     if (filterAbsentTeacherId) {
       const absentTeacher = teachers.find((t) => t.id === filterAbsentTeacherId);
@@ -568,13 +582,11 @@ export function useAppStore() {
       }
     }
 
-    // Check schedule slots for this day & hour
     const slotMap = new Map<string, ScheduleSlot>();
     scheduleSlots
       .filter((s) => s.day === dayOfWeek && s.lessonHour === lessonHour)
       .forEach((s) => slotMap.set(s.teacherId, s));
 
-    // Calculate total teaching lessons and free lessons for each teacher on this day (1..8)
     const teacherDailyTeachingCountMap = new Map<string, number>();
     scheduleSlots
       .filter((s) => s.day === dayOfWeek && s.classInfo && s.classInfo.trim().length > 0)
@@ -583,7 +595,6 @@ export function useAppStore() {
         teacherDailyTeachingCountMap.set(s.teacherId, count + 1);
       });
 
-    // Check duty day flag for this day
     const dutyTeacherSet = new Set<string>();
     scheduleSlots
       .filter((s) => s.day === dayOfWeek && s.isDutyDay)
@@ -592,10 +603,8 @@ export function useAppStore() {
     return teachers
       .filter((teacher) => {
         if (!teacher.isActive) return false;
-        // Exclude the absent teacher themselves
         if (filterAbsentTeacherId && teacher.id === filterAbsentTeacherId) return false;
 
-        // Enforce: Substitute teacher MUST teach at least one class in the absent teacher's school level(s)
         if (targetLevels && targetLevels.size > 0) {
           const candidateLevels = getTeacherTaughtLevels(teacher, scheduleSlots);
           const hasMatchingLevel = Array.from(targetLevels).some((lvl) => candidateLevels.has(lvl));
@@ -606,7 +615,7 @@ export function useAppStore() {
       })
       .map((teacher) => {
         const attStatus = dateAttendanceMap.get(teacher.id);
-        const isPresent = attStatus === 'geldi' || !attStatus; // default present unless absent
+        const isPresent = attStatus === 'geldi' || !attStatus;
         const slot = slotMap.get(teacher.id);
         const hasClass = Boolean(slot?.classInfo && slot.classInfo.trim().length > 0);
         const isDutyToday = dutyTeacherSet.has(teacher.id);
@@ -626,20 +635,15 @@ export function useAppStore() {
         };
       })
       .sort((a, b) => {
-        // Sorting strategy as requested:
-        // 1. Available teachers at this specific hour first
         if (a.isAvailable !== b.isAvailable) {
           return a.isAvailable ? -1 : 1;
         }
-        // 2. HIGHEST daily free lessons count first (en fazla boş dersi olan en başta)
         if (a.dailyFreeLessonsCount !== b.dailyFreeLessonsCount) {
           return b.dailyFreeLessonsCount - a.dailyFreeLessonsCount;
         }
-        // 3. Duty teachers first among equal free hours
         if (a.isDutyToday !== b.isDutyToday) {
           return a.isDutyToday ? -1 : 1;
         }
-        // 4. Lowest substitution count (fairness)
         return a.substitutionCount - b.substitutionCount;
       });
   };
@@ -651,10 +655,10 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, []);
 
     if (supabase) {
-      supabase.from('teachers').delete().neq('id', '0').then();
-      supabase.from('attendance_logs').delete().neq('id', '0').then();
-      supabase.from('substitution_logs').delete().neq('id', '0').then();
-      supabase.from('schedule_slots').delete().neq('id', '0').then();
+      supabase.from('teachers').delete().neq('id', '0').then().catch(() => {});
+      supabase.from('attendance_logs').delete().neq('id', '0').then().catch(() => {});
+      supabase.from('substitution_logs').delete().neq('id', '0').then().catch(() => {});
+      supabase.from('schedule_slots').delete().neq('id', '0').then().catch(() => {});
     }
   };
 
@@ -663,8 +667,8 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SUBSTITUTIONS, []);
 
     if (supabase) {
-      supabase.from('attendance_logs').delete().neq('id', '0').then();
-      supabase.from('substitution_logs').delete().neq('id', '0').then();
+      supabase.from('attendance_logs').delete().neq('id', '0').then().catch(() => {});
+      supabase.from('substitution_logs').delete().neq('id', '0').then().catch(() => {});
     }
   };
 
@@ -676,8 +680,8 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, scheduleSlots);
 
     if (supabase) {
-      supabase.from('teachers').upsert(INITIAL_TEACHERS.map(mapTeacherToDb)).then();
-      supabase.from('schedule_slots').upsert(scheduleSlots.map(mapScheduleSlotToDb)).then();
+      supabase.from('teachers').upsert(INITIAL_TEACHERS.map(mapTeacherToDb)).then().catch(() => {});
+      supabase.from('schedule_slots').upsert(scheduleSlots.map(mapScheduleSlotToDb)).then().catch(() => {});
     }
   };
 
