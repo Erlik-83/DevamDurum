@@ -93,6 +93,48 @@ export function initializeStoreIfEmpty() {
   }
 }
 
+// Global Realtime listener initialized only once across the entire application
+let isRealtimeSubscribed = false;
+function initGlobalRealtime() {
+  if (isRealtimeSubscribed || typeof window === 'undefined' || !isSupabaseConfigured() || !supabase) {
+    return;
+  }
+  isRealtimeSubscribed = true;
+
+  // Initial fetch from cloud
+  fetchAllFromCloud()
+    .then((cloudData) => {
+      if (cloudData && (cloudData.teachers.length > 0 || cloudData.attendanceLogs.length > 0)) {
+        setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
+        setStoredData(STORAGE_KEYS.ATTENDANCE, cloudData.attendanceLogs);
+        setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
+        setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
+      }
+    })
+    .catch((err) => {
+      console.warn('Cloud sync initial fetch notice:', err);
+    });
+
+  // Global realtime subscription
+  try {
+    supabase
+      .channel('app-realtime-global')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        fetchAllFromCloud().then((cloudData) => {
+          if (cloudData) {
+            setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
+            setStoredData(STORAGE_KEYS.ATTENDANCE, cloudData.attendanceLogs);
+            setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
+            setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
+          }
+        }).catch(() => {});
+      })
+      .subscribe();
+  } catch (e) {
+    console.warn('Realtime channel init notice:', e);
+  }
+}
+
 export function useAppStore() {
   const [isClient, setIsClient] = useState(false);
   const [isCloudConnected, setIsCloudConnected] = useState(false);
@@ -133,49 +175,10 @@ export function useAppStore() {
     try {
       cloudAvailable = isSupabaseConfigured();
       setIsCloudConnected(cloudAvailable);
-    } catch (e) {
-      console.warn('Supabase check notice:', e);
-    }
+    } catch (e) {}
 
-    // Fetch initial from cloud if connected
-    if (cloudAvailable && supabase) {
-      fetchAllFromCloud()
-        .then((cloudData) => {
-          if (cloudData && (cloudData.teachers.length > 0 || cloudData.attendanceLogs.length > 0)) {
-            setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
-            setStoredData(STORAGE_KEYS.ATTENDANCE, cloudData.attendanceLogs);
-            setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
-            setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
-          }
-        })
-        .catch((err) => {
-          console.warn('Cloud sync initial fetch error:', err);
-        });
-
-      // Realtime listener
-      try {
-        const channel = supabase
-          .channel('schema-db-changes')
-          .on('postgres_changes', { event: '*', schema: 'public' }, () => {
-            fetchAllFromCloud().then((cloudData) => {
-              if (cloudData) {
-                setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
-                setStoredData(STORAGE_KEYS.ATTENDANCE, cloudData.attendanceLogs);
-                setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
-                setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
-              }
-            }).catch(() => {});
-          })
-          .subscribe();
-
-        return () => {
-          try {
-            supabase?.removeChannel(channel);
-          } catch (e) {}
-        };
-      } catch (e) {
-        console.warn('Realtime channel notice:', e);
-      }
+    if (cloudAvailable) {
+      initGlobalRealtime();
     }
 
     const handler = () => refreshData();
@@ -197,7 +200,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.TEACHERS, updated);
 
     if (supabase) {
-      supabase.from('teachers').upsert(mapTeacherToDb(newTeacher)).then().catch(() => {});
+      supabase.from('teachers').upsert(mapTeacherToDb(newTeacher)).then();
     }
     return newTeacher;
   };
@@ -215,7 +218,7 @@ export function useAppStore() {
     if (supabase) {
       const updatedT = updated.find((t) => t.id === id);
       if (updatedT) {
-        supabase.from('teachers').upsert(mapTeacherToDb(updatedT)).then().catch(() => {});
+        supabase.from('teachers').upsert(mapTeacherToDb(updatedT)).then();
       }
     }
   };
@@ -225,7 +228,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.TEACHERS, updated);
 
     if (supabase) {
-      supabase.from('teachers').delete().eq('id', id).then().catch(() => {});
+      supabase.from('teachers').delete().eq('id', id).then();
     }
   };
 
@@ -241,7 +244,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.TEACHERS, updated);
 
     if (supabase) {
-      supabase.from('teachers').upsert(createdList.map(mapTeacherToDb)).then().catch(() => {});
+      supabase.from('teachers').upsert(createdList.map(mapTeacherToDb)).then();
     }
     return createdList;
   };
@@ -329,11 +332,11 @@ export function useAppStore() {
 
     if (supabase) {
       try {
-        supabase.from('teachers').upsert(mapTeacherToDb(updatedPrimary)).then().catch(() => {});
-        supabase.from('teachers').delete().eq('id', duplicateTeacherId).then().catch(() => {});
-        supabase.from('attendance_logs').upsert(updatedAttendance.map(mapAttendanceToDb)).then().catch(() => {});
-        supabase.from('substitution_logs').upsert(updatedSubs.map(mapSubstitutionToDb)).then().catch(() => {});
-        supabase.from('schedule_slots').upsert(updatedSchedule.map(mapScheduleSlotToDb)).then().catch(() => {});
+        supabase.from('teachers').upsert(mapTeacherToDb(updatedPrimary)).then();
+        supabase.from('teachers').delete().eq('id', duplicateTeacherId).then();
+        supabase.from('attendance_logs').upsert(updatedAttendance.map(mapAttendanceToDb)).then();
+        supabase.from('substitution_logs').upsert(updatedSubs.map(mapSubstitutionToDb)).then();
+        supabase.from('schedule_slots').upsert(updatedSchedule.map(mapScheduleSlotToDb)).then();
       } catch (e) {}
     }
   };
@@ -357,7 +360,7 @@ export function useAppStore() {
         (l) => !(l.teacherId === teacherId && l.date === date)
       );
       if (supabase) {
-        supabase.from('attendance_logs').delete().eq('teacher_id', teacherId).eq('date', date).then().catch(() => {});
+        supabase.from('attendance_logs').delete().eq('teacher_id', teacherId).eq('date', date).then();
       }
     } else if (existingIndex >= 0) {
       updatedLogs = [...attendanceLogs];
@@ -369,7 +372,7 @@ export function useAppStore() {
         updatedAt: nowStr,
       };
       if (supabase) {
-        supabase.from('attendance_logs').upsert(mapAttendanceToDb(updatedLogs[existingIndex])).then().catch(() => {});
+        supabase.from('attendance_logs').upsert(mapAttendanceToDb(updatedLogs[existingIndex])).then();
       }
     } else {
       const newLog: AttendanceLog = {
@@ -383,7 +386,7 @@ export function useAppStore() {
       };
       updatedLogs = [newLog, ...attendanceLogs];
       if (supabase) {
-        supabase.from('attendance_logs').upsert(mapAttendanceToDb(newLog)).then().catch(() => {});
+        supabase.from('attendance_logs').upsert(mapAttendanceToDb(newLog)).then();
       }
     }
 
@@ -398,7 +401,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.ATTENDANCE, updatedLogs);
 
     if (supabase) {
-      supabase.from('attendance_logs').delete().eq('date', date).in('teacher_id', teacherIds).then().catch(() => {});
+      supabase.from('attendance_logs').delete().eq('date', date).in('teacher_id', teacherIds).then();
     }
   };
 
@@ -446,7 +449,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.ATTENDANCE, updatedLogs);
 
     if (supabase && toUpsert.length > 0) {
-      supabase.from('attendance_logs').upsert(toUpsert.map(mapAttendanceToDb)).then().catch(() => {});
+      supabase.from('attendance_logs').upsert(toUpsert.map(mapAttendanceToDb)).then();
     }
   };
 
@@ -463,7 +466,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SUBSTITUTIONS, updated);
 
     if (supabase) {
-      supabase.from('substitution_logs').upsert(mapSubstitutionToDb(newSub)).then().catch(() => {});
+      supabase.from('substitution_logs').upsert(mapSubstitutionToDb(newSub)).then();
     }
     return newSub;
   };
@@ -473,7 +476,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SUBSTITUTIONS, updated);
 
     if (supabase) {
-      supabase.from('substitution_logs').delete().eq('id', id).then().catch(() => {});
+      supabase.from('substitution_logs').delete().eq('id', id).then();
     }
   };
 
@@ -484,7 +487,7 @@ export function useAppStore() {
     if (supabase) {
       const item = updated.find((s) => s.id === id);
       if (item) {
-        supabase.from('substitution_logs').upsert(mapSubstitutionToDb(item)).then().catch(() => {});
+        supabase.from('substitution_logs').upsert(mapSubstitutionToDb(item)).then();
       }
     }
   };
@@ -525,7 +528,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, updated);
 
     if (supabase) {
-      supabase.from('schedule_slots').upsert(mapScheduleSlotToDb(slotToSave)).then().catch(() => {});
+      supabase.from('schedule_slots').upsert(mapScheduleSlotToDb(slotToSave)).then();
     }
   };
 
@@ -543,7 +546,7 @@ export function useAppStore() {
 
     if (supabase) {
       const teacherSlots = updated.filter((s) => s.teacherId === teacherId);
-      supabase.from('schedule_slots').upsert(teacherSlots.map(mapScheduleSlotToDb)).then().catch(() => {});
+      supabase.from('schedule_slots').upsert(teacherSlots.map(mapScheduleSlotToDb)).then();
     }
   };
 
@@ -551,7 +554,7 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, newSlots);
 
     if (supabase && newSlots.length > 0) {
-      supabase.from('schedule_slots').upsert(newSlots.map(mapScheduleSlotToDb)).then().catch(() => {});
+      supabase.from('schedule_slots').upsert(newSlots.map(mapScheduleSlotToDb)).then();
     }
   };
 
@@ -655,10 +658,10 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, []);
 
     if (supabase) {
-      supabase.from('teachers').delete().neq('id', '0').then().catch(() => {});
-      supabase.from('attendance_logs').delete().neq('id', '0').then().catch(() => {});
-      supabase.from('substitution_logs').delete().neq('id', '0').then().catch(() => {});
-      supabase.from('schedule_slots').delete().neq('id', '0').then().catch(() => {});
+      supabase.from('teachers').delete().neq('id', '0').then();
+      supabase.from('attendance_logs').delete().neq('id', '0').then();
+      supabase.from('substitution_logs').delete().neq('id', '0').then();
+      supabase.from('schedule_slots').delete().neq('id', '0').then();
     }
   };
 
@@ -667,8 +670,8 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SUBSTITUTIONS, []);
 
     if (supabase) {
-      supabase.from('attendance_logs').delete().neq('id', '0').then().catch(() => {});
-      supabase.from('substitution_logs').delete().neq('id', '0').then().catch(() => {});
+      supabase.from('attendance_logs').delete().neq('id', '0').then();
+      supabase.from('substitution_logs').delete().neq('id', '0').then();
     }
   };
 
@@ -680,8 +683,8 @@ export function useAppStore() {
     setStoredData(STORAGE_KEYS.SCHEDULE, scheduleSlots);
 
     if (supabase) {
-      supabase.from('teachers').upsert(INITIAL_TEACHERS.map(mapTeacherToDb)).then().catch(() => {});
-      supabase.from('schedule_slots').upsert(scheduleSlots.map(mapScheduleSlotToDb)).then().catch(() => {});
+      supabase.from('teachers').upsert(INITIAL_TEACHERS.map(mapTeacherToDb)).then();
+      supabase.from('schedule_slots').upsert(scheduleSlots.map(mapScheduleSlotToDb)).then();
     }
   };
 
