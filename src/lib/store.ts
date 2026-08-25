@@ -116,17 +116,19 @@ function initGlobalRealtime() {
         const localSubs = getStoredData<SubstitutionLog[]>(STORAGE_KEYS.SUBSTITUTIONS, []);
         const localSchedule = getStoredData<ScheduleSlot[]>(STORAGE_KEYS.SCHEDULE, generateInitialScheduleSlots());
 
-        if (localTeachers.length > 0) {
-          supabase.from('teachers').upsert(localTeachers.map(mapTeacherToDb)).then();
-        }
-        if (localSchedule.length > 0) {
-          supabase.from('schedule_slots').upsert(localSchedule.map(mapScheduleSlotToDb)).then();
-        }
-        if (localAttendance.length > 0) {
-          supabase.from('attendance_logs').upsert(localAttendance.map(mapAttendanceToDb)).then();
-        }
-        if (localSubs.length > 0) {
-          supabase.from('substitution_logs').upsert(localSubs.map(mapSubstitutionToDb)).then();
+        if (supabase) {
+          if (localTeachers.length > 0) {
+            supabase.from('teachers').upsert(localTeachers.map(mapTeacherToDb)).then();
+          }
+          if (localSchedule.length > 0) {
+            supabase.from('schedule_slots').upsert(localSchedule.map(mapScheduleSlotToDb)).then();
+          }
+          if (localAttendance.length > 0) {
+            supabase.from('attendance_logs').upsert(localAttendance.map(mapAttendanceToDb)).then();
+          }
+          if (localSubs.length > 0) {
+            supabase.from('substitution_logs').upsert(localSubs.map(mapSubstitutionToDb)).then();
+          }
         }
       }
     })

@@ -1,7 +1,6 @@
 import { DayOfWeek, ScheduleSlot, SchoolLevel, Teacher } from './types';
 import { generateId, DAYS_OF_WEEK } from './utils';
 
-// Dynamic import or setup for pdfjs-dist in browser
 export interface ParsedPdfTeacherSchedule {
   teacherName: string;
   inferredBranch: string;
@@ -32,6 +31,9 @@ export function cleanTeacherName(raw: string): string {
     .replace(/\s+/g, ' ')
     .trim();
 
+  // Normalize common typo in surname
+  name = name.replace(/\bGÖKÇCE\b/gi, 'GÖKÇE');
+
   // Split into words, remove purely numeric words
   const words = name
     .split(' ')
@@ -44,16 +46,33 @@ export function cleanTeacherName(raw: string): string {
 
 export function inferBranchFromSubject(subjectText: string, classText: string = ''): string {
   const s = (subjectText + ' ' + classText).toUpperCase();
+
+  if (s.includes('DRAMA')) return 'Drama';
+  if (s.includes('SATRANÇ')) return 'Satranç / Akıl Oyunları';
+  if (s.includes('HALK OYUN') || s.includes('DANS')) return 'Halk Oyunları & Dans';
+  if (s.includes('EKOLOJİ')) return 'Ekoloji & Yaşam Becerileri';
+
+  if (
+    s.includes('HAYAT BİLGİSİ') ||
+    s.includes('İLK OKUMA') ||
+    s.includes('HİKAYE SANDIĞI') ||
+    s.includes('DÜŞÜNMENİN DOĞASI') ||
+    s.includes('SINIF BBT')
+  ) {
+    return 'Sınıf Öğretmenliği';
+  }
+
   if (s.includes('ANAOKUL') || s.includes('OKUL ÖNCESİ') || s.includes('-5') || s.includes('-4') || s.includes('5 YAŞ') || s.includes('4 YAŞ')) {
-    if (s.includes('İNGİLİZCE') || s.includes('ENGLISH')) return 'İngilizce';
+    if (s.includes('İNGİLİZCE') || s.includes('ENGLISH') || s.includes('NATİVE')) return 'İngilizce';
     if (s.includes('MÜZİK') || s.includes('ORFF')) return 'Müzik';
     if (s.includes('BEDEN') || s.includes('JİMNASTİK') || s.includes('HAREKET')) return 'Beden Eğitimi ve Spor';
     if (s.includes('GÖRSEL') || s.includes('SANAT') || s.includes('RESİM')) return 'Görsel Sanatlar';
     if (s.includes('ROBOTİK') || s.includes('KODLAMA')) return 'Bilişim Teknolojileri';
     if (s.includes('DRAMA')) return 'Drama';
-    return 'Okul Öncesi Öğretmenliği';
+    if (s.includes('OYUN SAATİ')) return 'Okul Öncesi Öğretmenliği';
   }
-  if (s.includes('TÜRKÇE') || s.includes('YAZMA')) return 'Türkçe & Edebiyat';
+
+  if (s.includes('TÜRKÇE') || s.includes('YAZMA') || s.includes('EDEBİYAT')) return 'Türkçe & Edebiyat';
   if (s.includes('MATEMATİK') || s.includes('AKIL OYUN')) return 'Matematik';
   if (s.includes('FEN') || s.includes('DOĞA VE MÜH') || s.includes('BİYOLOJİ') || s.includes('FİZİK') || s.includes('KİMYA')) return 'Fen Bilimleri';
   if (s.includes('SOSYAL') || s.includes('İNKILAP') || s.includes('TARİH') || s.includes('COĞRAFYA')) return 'Sosyal Bilgiler';
@@ -72,8 +91,6 @@ export const LEVEL_ORDER: string[] = ['Anaokulu', 'İlkokul', 'Ortaokul', 'Lise'
 
 /**
  * Infers school levels from class codes and subject names.
- * If a teacher enters classes across multiple school levels (e.g. İlkokul and Ortaokul),
- * returns all levels combined e.g. "İlkokul / Ortaokul".
  */
 export function inferSchoolLevels(classes: string[], subjects: string[]): string[] {
   const detected = new Set<string>();
@@ -97,6 +114,11 @@ export function inferSchoolLevels(classes: string[], subjects: string[]): string
   if (
     allText.match(/(?<!-)\b[1-4]\s*(\/|-|\s)?[A-Z]/i) ||
     allText.includes('İLKOKUL') ||
+    allText.includes('1.SINIF') ||
+    allText.includes('2.SINIF') ||
+    allText.includes('3.SINIF') ||
+    allText.includes('4.SINIF') ||
+    allText.includes('HAYAT BİLGİSİ') ||
     allText.includes('SINIF ÖĞRETMEN')
   ) {
     detected.add('İlkokul');
@@ -176,7 +198,12 @@ export function detectClassLevel(classInfo: string): SchoolLevel | null {
   }
   if (
     c.match(/(?<!-)\b[1-4]\s*(\/|-|\s)?[A-Z]/i) ||
-    c.includes('İLKOKUL')
+    c.includes('İLKOKUL') ||
+    c.includes('1.SINIF') ||
+    c.includes('2.SINIF') ||
+    c.includes('3.SINIF') ||
+    c.includes('4.SINIF') ||
+    c.includes('HAYAT BİLGİSİ')
   ) {
     return 'İlkokul';
   }
@@ -191,10 +218,6 @@ export function detectClassLevel(classInfo: string): SchoolLevel | null {
   return null;
 }
 
-/**
- * Finds all school levels (e.g. Ortaokul, İlkokul, Anaokulu, Lise) that a teacher teaches in.
- * Checks teacher.level (including split "İlkokul / Ortaokul") and all scheduled classes in scheduleSlots.
- */
 export function getTeacherTaughtLevels(
   teacher: Teacher,
   scheduleSlots: ScheduleSlot[] = []
@@ -216,9 +239,6 @@ export function getTeacherTaughtLevels(
   return levels;
 }
 
-/**
- * Returns the formatted display level for a teacher (e.g. "İlkokul / Ortaokul").
- */
 export function formatTeacherLevel(teacher: Teacher, scheduleSlots?: ScheduleSlot[]): string {
   const levels = getTeacherTaughtLevels(teacher, scheduleSlots || []);
   if (levels.size === 0) return teacher.level || 'Ortaokul';
@@ -232,16 +252,10 @@ export function formatTeacherLevel(teacher: Teacher, scheduleSlots?: ScheduleSlo
   return sorted.join(' / ');
 }
 
-/**
- * Format class text to provide clear age/grade descriptions for preschool codes
- * e.g. "-5/A" -> "-5/A (Anaokulu 5 Yaş)"
- *      "-4"   -> "-4 (Anaokulu 4 Yaş)"
- */
 export function formatClassText(rawClass: string): string {
   let c = rawClass.trim();
   if (!c) return '';
 
-  // Check if contains kindergarten codes -5 or -4
   if (c.includes('-5') && !c.includes('5 Yaş')) {
     c = c.replace(/-5\s*(\/)?\s*([A-Za-z])?/g, (match) => `${match} [Anaokulu 5 Yaş]`);
   } else if (c.includes('-4') && !c.includes('4 Yaş')) {
@@ -253,13 +267,16 @@ export function formatClassText(rawClass: string): string {
   return c.trim();
 }
 
+/**
+ * Parses aSc Timetable PDF with automatic adaptive grid detection.
+ * Automatically accommodates tables with or without 'ÖĞLE ARASI' column,
+ * varying lesson hours (1..8), and custom headers.
+ */
 export async function parseAscPdfTimetable(
   fileBuffer: ArrayBuffer
 ): Promise<ParsedPdfTeacherSchedule[]> {
-  // Use pdfjs-dist
   const pdfjsLib = await import('pdfjs-dist');
   
-  // Set worker
   if (typeof window !== 'undefined') {
     pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
   }
@@ -272,6 +289,7 @@ export async function parseAscPdfTimetable(
 
   const pdf = await loadingTask.promise;
   const results: ParsedPdfTeacherSchedule[] = [];
+  const dayKeywords: DayOfWeek[] = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page = await pdf.getPage(pageNum);
@@ -285,9 +303,6 @@ export async function parseAscPdfTimetable(
       height: number;
     }>;
 
-    // Find teacher name in items
-    let rawTeacherName = '';
-    
     // Sort items by Y (descending) then X (ascending)
     const sortedItems = [...items].sort((a, b) => {
       const yDiff = b.transform[5] - a.transform[5];
@@ -295,7 +310,8 @@ export async function parseAscPdfTimetable(
       return a.transform[4] - b.transform[4];
     });
 
-    // Detect teacher header
+    // 1. Detect teacher name
+    let rawTeacherName = '';
     const teacherHeaderIndex = sortedItems.findIndex((it) => {
       const s = it.str.toLowerCase();
       return s.includes('öğretmen') || s.includes('ogretmen');
@@ -305,7 +321,6 @@ export async function parseAscPdfTimetable(
       const headerItem = sortedItems[teacherHeaderIndex];
       const headerY = headerItem.transform[5];
 
-      // Grab items strictly on the same header line (Y difference <= 6)
       const sameLineItems = sortedItems.filter((it) => {
         const yDiff = Math.abs(it.transform[5] - headerY);
         return yDiff <= 6 && it.transform[4] >= headerItem.transform[4];
@@ -315,7 +330,6 @@ export async function parseAscPdfTimetable(
     }
 
     if (!rawTeacherName) {
-      // Fallback search
       const headerItem = sortedItems.find((it) =>
         it.str.toUpperCase().includes('ÖĞRETMEN')
       );
@@ -328,87 +342,168 @@ export async function parseAscPdfTimetable(
 
     const teacherName = cleanTeacherName(rawTeacherName) || `Öğretmen ${pageNum}`;
 
-    const dayKeywords: DayOfWeek[] = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
-    
-    // Filter items belonging to timetable cells
+    // 2. Detect Row Y Positions (Day Rows)
+    const rowYMap = new Map<DayOfWeek, number>();
+    dayKeywords.forEach((dayName) => {
+      const dayItem = sortedItems.find((it) => it.str.trim() === dayName && it.transform[4] < viewport.width * 0.15);
+      if (dayItem) {
+        rowYMap.set(dayName, dayItem.transform[5]);
+      }
+    });
+
+    // 3. Detect Column X Positions (1..8 and ÖĞLE ARASI)
+    interface ColDefinition {
+      lessonHour: number; // 1..8 or -1 for lunch break
+      centerX: number;
+    }
+    const detectedCols: ColDefinition[] = [];
+
+    // Search header items for column markers
+    const colHeaderItems = sortedItems.filter((it) => {
+      const s = it.str.trim();
+      const isTopArea = it.transform[5] > viewport.height * 0.75;
+      return isTopArea && (s.match(/^[1-8](\.DERS)?$/i) || s.includes('ÖĞLE'));
+    });
+
+    // Group items by close X coordinates
+    const distinctCols: { x: number; text: string }[] = [];
+    colHeaderItems.forEach((it) => {
+      const x = it.transform[4];
+      const existing = distinctCols.find((c) => Math.abs(c.x - x) < 30);
+      if (!existing) {
+        distinctCols.push({ x, text: it.str.trim() });
+      }
+    });
+
+    distinctCols.sort((a, b) => a.x - b.x);
+
+    // If we have distinct columns detected from headers
+    if (distinctCols.length >= 8) {
+      let currentHour = 1;
+      distinctCols.forEach((col) => {
+        if (col.text.toUpperCase().includes('ÖĞLE')) {
+          detectedCols.push({ lessonHour: -1, centerX: col.x });
+        } else {
+          detectedCols.push({ lessonHour: currentHour, centerX: col.x });
+          currentHour++;
+        }
+      });
+    }
+
+    // 4. Create cell slots (5 days x 8 hours)
     const cellSlots: { day: DayOfWeek; lessonHour: number; classInfo: string; subject?: string }[] = [];
     const subjectsFound: string[] = [];
     const classesFound: string[] = [];
 
-    // Create an empty 5x8 grid
     dayKeywords.forEach((d) => {
       for (let h = 1; h <= 8; h++) {
         cellSlots.push({ day: d, lessonHour: h, classInfo: '', subject: '' });
       }
     });
 
+    // 5. Filter out non-lesson text items (headers, days, timestamps, teacher name)
+    const normalizedTeacherWords = teacherName.toLowerCase().split(' ');
     const contentItems = sortedItems.filter((it) => {
       const s = it.str.trim();
       if (!s) return false;
       if (s.includes('Ders Planı') || s.includes('aSc Ders') || s.includes('Öğretmen')) return false;
       if (dayKeywords.some((d) => s === d)) return false;
-      if (s.match(/^\d+$/) && parseInt(s) <= 8) return false;
       if (s.match(/^\d+:\d+$/)) return false;
+      if (s.match(/^\d+$/) && parseInt(s) <= 8 && it.transform[5] > viewport.height * 0.75) return false;
+      if (s.includes('ÖĞLE')) return false;
+      if (it.transform[4] < viewport.width * 0.08) return false; // Left margin
+
+      // Skip teacher's own name inside cells if duplicated
+      const sLower = s.toLowerCase();
+      if (normalizedTeacherWords.some((w) => w.length > 2 && sLower === w)) {
+        return false;
+      }
       return true;
     });
 
+    // 6. Map content items into cells
     const gridWidth = viewport.width;
     const gridHeight = viewport.height;
 
-    const colStartX = gridWidth * 0.13;
-    const colStepX = (gridWidth * 0.86) / 8;
-
-    const rowStartY = gridHeight * 0.78;
-    const rowStepY = (gridHeight * 0.70) / 5;
+    // Fallback bounds if dynamic detection wasn't full
+    const fallbackColStartX = gridWidth * 0.13;
+    const fallbackColStepX = (gridWidth * 0.86) / (detectedCols.length > 0 ? detectedCols.length : 8);
 
     contentItems.forEach((it) => {
       const x = it.transform[4];
       const y = it.transform[5];
 
-      const colIdx = Math.floor((x - colStartX) / colStepX);
-      const rowIdx = Math.floor((rowStartY - y) / rowStepY);
+      // Find closest Day (Row)
+      let closestDay: DayOfWeek = 'Pazartesi';
+      let minDayDiff = Infinity;
 
-      if (colIdx >= 0 && colIdx < 8 && rowIdx >= 0 && rowIdx < 5) {
-        const hour = colIdx + 1;
-        const day = dayKeywords[rowIdx];
-        const slot = cellSlots.find((s) => s.day === day && s.lessonHour === hour);
+      dayKeywords.forEach((dayName, idx) => {
+        const rowY = rowYMap.get(dayName) ?? (gridHeight * (0.75 - idx * 0.145));
+        const diff = Math.abs(y - rowY);
+        if (diff < minDayDiff) {
+          minDayDiff = diff;
+          closestDay = dayName;
+        }
+      });
 
-        if (slot) {
-          const text = it.str.trim();
-          if (text) {
-            // Recognize classes:
-            // 1. Kindergarten negative codes: -5, -4, -3, -5/A, -4/B, -5A, -4A, 5 YAŞ, 4 YAŞ
-            // 2. Standard classes: 5/A, 6/B, 10-Fen B, 8/A/8/B, etc.
-            // 3. Exam blocks: SINAV SAATİ, LGS SINAV
-            const isKindergartenClass = Boolean(
-              text.match(/^-?[345]\s*(\/|-|\s)?[A-Z0-9]?$/i) ||
-              text.includes('-5') ||
-              text.includes('-4') ||
-              text.includes('5 YAŞ') ||
-              text.includes('4 YAŞ')
-            );
+      // Find closest Column (Lesson Hour)
+      let lessonHour = 1;
 
-            const isRegularClass = Boolean(
-              text.match(/^-?\d+\s*(\/|-|\s)?[A-Z0-9]/i) ||
-              text.match(/\d+\s*\/\s*[A-Z]/i) ||
-              text.includes('SINAV') ||
-              text.includes('LGS')
-            );
+      if (detectedCols.length >= 8) {
+        let minColDiff = Infinity;
+        let matchedHour = 1;
 
-            if (isKindergartenClass || isRegularClass) {
-              const formatted = formatClassText(text);
-              slot.classInfo = slot.classInfo ? `${slot.classInfo} ${formatted}` : formatted;
-              classesFound.push(text);
-            } else {
-              slot.subject = slot.subject ? `${slot.subject} ${text}` : text;
-              subjectsFound.push(text);
-            }
+        detectedCols.forEach((colDef) => {
+          const diff = Math.abs(x - colDef.centerX);
+          if (diff < minColDiff) {
+            minColDiff = diff;
+            matchedHour = colDef.lessonHour;
+          }
+        });
+
+        if (matchedHour === -1) {
+          // Lunch break column - skip
+          return;
+        }
+        lessonHour = matchedHour;
+      } else {
+        // Fallback calculation
+        const colIdx = Math.floor((x - fallbackColStartX) / fallbackColStepX);
+        lessonHour = Math.max(1, Math.min(8, colIdx + 1));
+      }
+
+      const slot = cellSlots.find((s) => s.day === closestDay && s.lessonHour === lessonHour);
+
+      if (slot) {
+        const text = it.str.trim();
+        if (text) {
+          // Check if class code e.g. -5/B, 2/A, 4/C, 1/B, 2.SINIF BBT, 7/A/7/B, SINAV SAATİ, LGS SINAV
+          const isClassCode = Boolean(
+            text.match(/^-?[1-8]\s*(\/|-|\s)?[A-Z0-9]?$/i) ||
+            text.includes('-5') ||
+            text.includes('-4') ||
+            text.includes('5 YAŞ') ||
+            text.includes('4 YAŞ') ||
+            text.match(/^[1-4]\.[Ss][ıI][nN][ıI][fF]/) ||
+            text.includes('SINAV') ||
+            text.includes('LGS') ||
+            text.match(/^[1-8]\/[A-Z](\/[1-8]\/[A-Z])*/i)
+          );
+
+          if (isClassCode) {
+            const formatted = formatClassText(text);
+            slot.classInfo = slot.classInfo ? `${slot.classInfo} ${formatted}` : formatted;
+            classesFound.push(text);
+          } else {
+            // Subject text
+            slot.subject = slot.subject ? `${slot.subject} ${text}` : text;
+            subjectsFound.push(text);
           }
         }
       }
     });
 
-    // Cleanup classInfo and format nicely
+    // 7. Format each cell slot
     cellSlots.forEach((s) => {
       if (!s.classInfo && s.subject) {
         s.classInfo = s.subject;
@@ -418,7 +513,7 @@ export async function parseAscPdfTimetable(
       s.classInfo = s.classInfo.trim();
     });
 
-    // Infer branch and school level
+    // 8. Infer branch and school level
     const inferredBranch = inferBranchFromSubject(subjectsFound.join(' '), classesFound.join(' '));
     const inferredLevel = inferSchoolLevel(classesFound, subjectsFound);
 
