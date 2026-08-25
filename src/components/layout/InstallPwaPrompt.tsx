@@ -10,53 +10,67 @@ export function InstallPwaPrompt() {
   const [isIos, setIsIos] = useState(false);
 
   useEffect(() => {
-    // Check if running as standalone PWA
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true;
+    try {
+      if (typeof window === 'undefined') return;
 
-    if (isStandalone) {
-      return; // Already running as an installed app!
+      // Check if running as standalone PWA
+      const isStandalone =
+        window.matchMedia?.('(display-mode: standalone)')?.matches ||
+        (window.navigator as any)?.standalone === true;
+
+      if (isStandalone) {
+        return; // Already running as an installed app!
+      }
+
+      // Check if iOS
+      const userAgent = window.navigator?.userAgent?.toLowerCase() || '';
+      const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
+      setIsIos(isIosDevice);
+
+      // Chrome/Android/Desktop beforeinstallprompt event
+      const handleBeforeInstallPrompt = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShowPrompt(true);
+      };
+
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+      // If iOS and not dismissed in this session
+      let isDismissed = null;
+      try {
+        isDismissed = sessionStorage.getItem('pwa_prompt_dismissed');
+      } catch (e) {}
+
+      if (isIosDevice && !isDismissed) {
+        setShowPrompt(true);
+      }
+
+      return () => {
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      };
+    } catch (err) {
+      console.warn('PWA init notice:', err);
     }
-
-    // Check if iOS
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
-    setIsIos(isIosDevice);
-
-    // Chrome/Android/Desktop beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowPrompt(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    // If iOS and not dismissed in this session
-    const isDismissed = sessionStorage.getItem('pwa_prompt_dismissed');
-    if (isIosDevice && !isDismissed) {
-      setShowPrompt(true);
-    }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setShowPrompt(false);
-    }
-    setDeferredPrompt(null);
+    try {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setShowPrompt(false);
+      }
+      setDeferredPrompt(null);
+    } catch (e) {}
   };
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    sessionStorage.setItem('pwa_prompt_dismissed', 'true');
+    try {
+      sessionStorage.setItem('pwa_prompt_dismissed', 'true');
+    } catch (e) {}
   };
 
   if (!showPrompt) return null;
