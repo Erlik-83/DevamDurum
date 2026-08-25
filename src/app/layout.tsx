@@ -27,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr">
-      <body className="bg-slate-50 text-slate-900 min-h-screen antialiased">
+    <html lang="tr" suppressHydrationWarning>
+      <body className="bg-slate-50 text-slate-900 min-h-screen antialiased" suppressHydrationWarning>
         <AppLayout>{children}</AppLayout>
         <InstallPwaPrompt />
       </body>

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
+import { SystemResetModal } from './SystemResetModal';
 
 const NAV_ITEMS = [
   {
@@ -56,15 +57,13 @@ const NAV_ITEMS = [
   },
 ];
 
-import { SystemResetModal } from './SystemResetModal';
-
 interface SidebarProps {
   onCloseMobile?: () => void;
 }
 
 export function Sidebar({ onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
-  const { teachers } = useAppStore();
+  const { isClient, teachers } = useAppStore();
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   return (
@@ -90,7 +89,7 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
             Kayıtlı Öğretmen:
           </span>
           <span className="font-bold text-white bg-slate-700/80 px-2 py-0.5 rounded-md">
-            {teachers.length}
+            {isClient ? teachers.length : 21}
           </span>
         </div>
 

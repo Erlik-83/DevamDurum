@@ -5,11 +5,13 @@ import { Smartphone, Download, X, Share } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function InstallPwaPrompt() {
+  const [isMounted, setIsMounted] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIos, setIsIos] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     try {
       if (typeof window === 'undefined') return;
 
@@ -73,7 +75,7 @@ export function InstallPwaPrompt() {
     } catch (e) {}
   };
 
-  if (!showPrompt) return null;
+  if (!isMounted || !showPrompt) return null;
 
   return (
     <div className="fixed bottom-3 right-3 left-3 sm:left-auto sm:right-6 sm:w-96 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
