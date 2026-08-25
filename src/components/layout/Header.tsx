@@ -25,7 +25,7 @@ interface HeaderProps {
 
 export function Header({ onToggleMobileMenu }: HeaderProps) {
   const today = getTodayString();
-  const { isCloudConnected } = useAppStore();
+  const { isClient, isCloudConnected } = useAppStore();
   const [isTeacherModalOpen, setIsTeacherModalOpen] = useState(false);
   const [isSubModalOpen, setIsSubModalOpen] = useState(false);
 
@@ -43,7 +43,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
 
         <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-50/80 border border-indigo-100 text-indigo-900 text-xs font-semibold">
           <Calendar className="w-3.5 h-3.5 text-indigo-600" />
-          <span>Bugün: {formatDateTurkish(today)}</span>
+          <span>Bugün: {isClient ? formatDateTurkish(today) : ''}</span>
         </div>
 
         {/* Cloud Database Status Indicator */}

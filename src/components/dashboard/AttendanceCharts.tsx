@@ -34,6 +34,11 @@ export function AttendanceCharts({
   selectedLevelFilter,
 }: AttendanceChartsProps) {
   const [chartType, setChartType] = useState<'level' | 'trend' | 'branch'>('level');
+  const [isMounted, setIsMounted] = useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const teacherMap = new Map(teachers.map((t) => [t.id, t]));
 
@@ -165,10 +170,15 @@ export function AttendanceCharts({
       </CardHeader>
 
       <CardContent>
-        <div className="h-72 w-full pt-2">
-          {chartType === 'level' && (
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={levelData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+        {!isMounted ? (
+          <div className="h-72 w-full flex items-center justify-center text-xs text-slate-400">
+            Grafikler Hazırlanıyor...
+          </div>
+        ) : (
+          <div className="h-72 w-full pt-2">
+            {chartType === 'level' && (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={levelData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" tickLine={false} tick={{ fontSize: 12, fill: '#475569' }} />
                 <YAxis tickLine={false} tick={{ fontSize: 12, fill: '#475569' }} allowDecimals={false} />
@@ -249,7 +259,8 @@ export function AttendanceCharts({
             </ResponsiveContainer>
           )}
         </div>
-      </CardContent>
-    </Card>
-  );
+      )}
+    </CardContent>
+  </Card>
+);
 }
