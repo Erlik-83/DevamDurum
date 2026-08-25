@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#312e81" />
+    </linearGradient>
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e0e7ff" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <!-- Graduation Cap Icon -->
+  <path d="M256 128 L64 224 L256 320 L448 224 Z" fill="url(#capGrad)" />
+  <path d="M144 268 L144 352 C144 388 200 416 256 416 C312 416 368 388 368 352 L368 268 L256 324 Z" fill="#c7d2fe" />
+  <path d="M432 232 L432 368 L416 376 L400 368 L400 248 Z" fill="#fbbf24" />
+  <circle cx="416" cy="384" r="16" fill="#f59e0b" />
+</svg>
