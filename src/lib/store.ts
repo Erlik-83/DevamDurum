@@ -104,11 +104,30 @@ function initGlobalRealtime() {
   // Initial fetch from cloud
   fetchAllFromCloud()
     .then((cloudData) => {
-      if (cloudData && (cloudData.teachers.length > 0 || cloudData.attendanceLogs.length > 0)) {
+      if (cloudData && cloudData.teachers.length > 0) {
         setStoredData(STORAGE_KEYS.TEACHERS, cloudData.teachers);
         setStoredData(STORAGE_KEYS.ATTENDANCE, cloudData.attendanceLogs);
         setStoredData(STORAGE_KEYS.SUBSTITUTIONS, cloudData.substitutionLogs);
         setStoredData(STORAGE_KEYS.SCHEDULE, cloudData.scheduleSlots);
+      } else if (cloudData && cloudData.teachers.length === 0) {
+        // Cloud database is empty -> Initial seed from local data to Cloud database
+        const localTeachers = getStoredData<Teacher[]>(STORAGE_KEYS.TEACHERS, INITIAL_TEACHERS);
+        const localAttendance = getStoredData<AttendanceLog[]>(STORAGE_KEYS.ATTENDANCE, []);
+        const localSubs = getStoredData<SubstitutionLog[]>(STORAGE_KEYS.SUBSTITUTIONS, []);
+        const localSchedule = getStoredData<ScheduleSlot[]>(STORAGE_KEYS.SCHEDULE, generateInitialScheduleSlots());
+
+        if (localTeachers.length > 0) {
+          supabase.from('teachers').upsert(localTeachers.map(mapTeacherToDb)).then();
+        }
+        if (localSchedule.length > 0) {
+          supabase.from('schedule_slots').upsert(localSchedule.map(mapScheduleSlotToDb)).then();
+        }
+        if (localAttendance.length > 0) {
+          supabase.from('attendance_logs').upsert(localAttendance.map(mapAttendanceToDb)).then();
+        }
+        if (localSubs.length > 0) {
+          supabase.from('substitution_logs').upsert(localSubs.map(mapSubstitutionToDb)).then();
+        }
       }
     })
     .catch((err) => {
