@@ -23,9 +23,13 @@ interface HeaderProps {
   onToggleMobileMenu: () => void;
 }
 
+import { useAuthStore } from '@/lib/authStore';
+import { KeyRound, Lock, LogOut } from 'lucide-react';
+
 export function Header({ onToggleMobileMenu }: HeaderProps) {
   const today = getTodayString();
   const { isClient, isCloudConnected } = useAppStore();
+  const { setIsPinModalOpen, logout } = useAuthStore();
   const [isTeacherModalOpen, setIsTeacherModalOpen] = useState(false);
   const [isSubModalOpen, setIsSubModalOpen] = useState(false);
 
@@ -111,6 +115,29 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
           <span className="hidden sm:inline">Yeni Öğretmen</span>
           <span className="sm:hidden">Ekle</span>
         </Button>
+
+        {/* Security / PIN Menu */}
+        <div className="flex items-center gap-1 pl-1 border-l border-slate-200">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsPinModalOpen(true)}
+            className="p-2 h-8 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg"
+            title="Okul Yönetici PIN Kodunu Değiştir"
+          >
+            <KeyRound className="w-4 h-4" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => logout()}
+            className="p-2 h-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg"
+            title="Oturumu Güvenli Kilitle"
+          >
+            <LogOut className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Teacher Add Modal */}

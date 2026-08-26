@@ -61,9 +61,13 @@ interface SidebarProps {
   onCloseMobile?: () => void;
 }
 
+import { useAuthStore } from '@/lib/authStore';
+import { KeyRound, Lock, LogOut } from 'lucide-react';
+
 export function Sidebar({ onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { isClient, teachers } = useAppStore();
+  const { setIsPinModalOpen, logout } = useAuthStore();
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   return (
@@ -139,15 +143,35 @@ export function Sidebar({ onCloseMobile }: SidebarProps) {
           })}
         </nav>
 
-        {/* Footer / Reset Data Button */}
-        <div className="p-4 border-t border-slate-800/80 bg-slate-950/40">
+        {/* Footer Actions: Security PIN & Reset */}
+        <div className="p-3 border-t border-slate-800/80 bg-slate-950/60 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setIsPinModalOpen(true)}
+              className="flex items-center justify-center gap-1.5 text-[11px] text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700/80 py-2 px-2 rounded-xl transition-all font-semibold"
+              title="Yönetici PIN Kodunu Değiştir"
+            >
+              <KeyRound className="w-3.5 h-3.5 text-indigo-400" />
+              <span>PIN Değiştir</span>
+            </button>
+
+            <button
+              onClick={() => logout()}
+              className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 hover:text-rose-300 hover:bg-rose-950/40 border border-slate-800 py-2 px-2 rounded-xl transition-all font-semibold"
+              title="Oturumu Kilitle"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Kilitle</span>
+            </button>
+          </div>
+
           <button
             onClick={() => setIsResetModalOpen(true)}
-            className="w-full flex items-center justify-center gap-2 text-xs text-rose-300 hover:text-white hover:bg-rose-600/30 border border-rose-900/50 hover:border-rose-500 py-2.5 px-3 rounded-xl transition-all font-semibold shadow-xs"
-            title="Sistem verilerini sıfırlama veya temizleme seçeneklerini aç"
+            className="w-full flex items-center justify-center gap-1.5 text-[11px] text-rose-400/80 hover:text-rose-200 hover:bg-rose-950/30 border border-rose-950/40 py-1.5 px-3 rounded-xl transition-all font-medium"
+            title="Sistem verilerini sıfırlama seçenekleri"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Sistemi & Verileri Sıfırla</span>
+            <RotateCcw className="w-3 h-3 text-rose-500" />
+            <span>Verileri Sıfırla</span>
           </button>
         </div>
       </aside>

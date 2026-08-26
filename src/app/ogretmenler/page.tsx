@@ -24,6 +24,9 @@ import {
   Mail,
   CreditCard,
   Layers,
+  Eye,
+  EyeOff,
+  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatTeacherLevel, getTeacherTaughtLevels } from '@/lib/pdfScheduleParser';
@@ -33,12 +36,28 @@ export default function TeachersPage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLevel, setSelectedLevel] = useState<string>('Tümü');
+  const [showSensitiveData, setShowSensitiveData] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
   const [teacherToEdit, setTeacherToEdit] = useState<Teacher | null>(null);
 
   const duplicatePairsCount = findDuplicateTeacherPairs(teachers, 75).length;
+
+  const maskTc = (tc?: string) => {
+    if (!tc) return '';
+    if (showSensitiveData) return tc;
+    if (tc.length <= 4) return '****';
+    return `${tc.slice(0, 4)}***${tc.slice(-2)}`;
+  };
+
+  const maskPhone = (phone?: string) => {
+    if (!phone) return '';
+    if (showSensitiveData) return phone;
+    const clean = phone.replace(/\s+/g, '');
+    if (clean.length < 7) return '05** *** ** **';
+    return `${clean.slice(0, 4)} *** ** ${clean.slice(-2)}`;
+  };
 
   // Filter teachers (supporting multi-level teachers e.g. İlkokul / Ortaokul)
   const filteredTeachers = teachers.filter((t) => {
@@ -110,6 +129,31 @@ export default function TeachersPage() {
 
         {/* Top Actions: Template Download, Excel Import, Duplicate Merge, Add Teacher */}
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* KVKK Masking Toggle Button */}
+          <Button
+            onClick={() => setShowSensitiveData(!showSensitiveData)}
+            variant="outline"
+            className={cn(
+              'gap-1.5 text-xs font-semibold shadow-xs transition-colors',
+              showSensitiveData
+                ? 'bg-amber-50 text-amber-800 border-amber-300'
+                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+            )}
+            title="TC Kimlik ve Telefon numaralarını gizle veya göster"
+          >
+            {showSensitiveData ? (
+              <>
+                <EyeOff className="w-4 h-4 text-amber-600" />
+                <span>Hassas Verileri Gizle (KVKK)</span>
+              </>
+            ) : (
+              <>
+                <Eye className="w-4 h-4 text-slate-500" />
+                <span>TC & Telefonları Göster</span>
+              </>
+            )}
+          </Button>
+
           {duplicatePairsCount > 0 && (
             <Button
               onClick={() => setIsMergeModalOpen(true)}
@@ -241,19 +285,19 @@ export default function TeachersPage() {
                   </Badge>
                 </div>
 
-                {/* Contact & TC Info if any */}
+                {/* Contact & TC Info with KVKK Masking */}
                 {(teacher.phone || teacher.email || teacher.tcNo) && (
                   <div className="bg-slate-50 p-2.5 rounded-lg text-[11px] text-slate-600 space-y-1 border border-slate-100">
                     {teacher.tcNo && (
                       <div className="flex items-center gap-1.5 truncate">
                         <CreditCard className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                        <span className="font-mono text-slate-700 font-medium">TC: {teacher.tcNo}</span>
+                        <span className="font-mono text-slate-700 font-medium">TC: {maskTc(teacher.tcNo)}</span>
                       </div>
                     )}
                     {teacher.phone && (
                       <div className="flex items-center gap-1.5 truncate">
                         <Phone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                        <span>{teacher.phone}</span>
+                        <span>{maskPhone(teacher.phone)}</span>
                       </div>
                     )}
                     {teacher.email && (
