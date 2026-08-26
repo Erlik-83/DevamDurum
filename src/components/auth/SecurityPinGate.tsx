@@ -54,8 +54,8 @@ export function SecurityPinGate({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-950 via-slate-950 to-emerald-900 flex items-center justify-center p-4 selection:bg-emerald-500 selection:text-white">
-      <div className="w-full max-w-md bg-slate-900/95 backdrop-blur-xl border border-emerald-800/60 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center text-slate-100 animate-in fade-in zoom-in-95 duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 flex items-center justify-center p-4 selection:bg-emerald-500 selection:text-white">
+      <div className="w-full max-w-md bg-slate-900/95 backdrop-blur-xl border border-emerald-700/60 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center text-slate-100 animate-in fade-in zoom-in-95 duration-300">
         {/* School Icon Header */}
         <div className="flex flex-col items-center gap-3">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-emerald-900/50 ring-2 ring-emerald-400/30">
