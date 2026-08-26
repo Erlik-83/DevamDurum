@@ -21,6 +21,7 @@ import {
   Edit2,
   Trash2,
   Phone,
+  PhoneCall,
   Mail,
   CreditCard,
   Layers,
@@ -287,7 +288,7 @@ export default function TeachersPage() {
 
                 {/* Contact & TC Info with KVKK Masking */}
                 {(teacher.phone || teacher.email || teacher.tcNo) && (
-                  <div className="bg-slate-50 p-2.5 rounded-lg text-[11px] text-slate-600 space-y-1 border border-slate-100">
+                  <div className="bg-slate-50 p-2.5 rounded-lg text-[11px] text-slate-600 space-y-1.5 border border-slate-100">
                     {teacher.tcNo && (
                       <div className="flex items-center gap-1.5 truncate">
                         <CreditCard className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
@@ -295,15 +296,35 @@ export default function TeachersPage() {
                       </div>
                     )}
                     {teacher.phone && (
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Phone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                        <span>{maskPhone(teacher.phone)}</span>
+                      <div className="flex items-center justify-between gap-1.5">
+                        <a
+                          href={`tel:${teacher.phone.replace(/[^0-9+]/g, '')}`}
+                          className="flex items-center gap-1.5 truncate text-slate-700 hover:text-emerald-700 hover:underline transition-colors group/call"
+                          title={`${teacher.name} isimli öğretmeni telefonla ara`}
+                        >
+                          <Phone className="w-3.5 h-3.5 text-emerald-600 group-hover/call:scale-110 transition-transform flex-shrink-0" />
+                          <span className="font-semibold">{maskPhone(teacher.phone)}</span>
+                        </a>
+                        <a
+                          href={`tel:${teacher.phone.replace(/[^0-9+]/g, '')}`}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 text-[10px] font-bold transition-all shadow-2xs flex-shrink-0"
+                          title="Doğrudan Telefonla Ara"
+                        >
+                          <PhoneCall className="w-3 h-3 text-emerald-600" />
+                          <span>Ara</span>
+                        </a>
                       </div>
                     )}
                     {teacher.email && (
                       <div className="flex items-center gap-1.5 truncate">
-                        <Mail className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                        <span>{teacher.email}</span>
+                        <a
+                          href={`mailto:${teacher.email}`}
+                          className="flex items-center gap-1.5 truncate text-slate-600 hover:text-emerald-700 hover:underline transition-colors"
+                          title="E-posta gönder"
+                        >
+                          <Mail className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                          <span>{teacher.email}</span>
+                        </a>
                       </div>
                     )}
                   </div>

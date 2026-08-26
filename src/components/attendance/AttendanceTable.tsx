@@ -20,6 +20,7 @@ import {
   ArrowLeftRight,
   MessageSquare,
   Lock,
+  Phone,
 } from 'lucide-react';
 import { cn, isWeekend } from '@/lib/utils';
 import { formatTeacherLevel, getTeacherTaughtLevels } from '@/lib/pdfScheduleParser';
@@ -360,6 +361,16 @@ export function AttendanceTable({ selectedDate }: AttendanceTableProps) {
                     </div>
                     <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 flex-wrap">
                       <span>{teacher.branch}</span>
+                      {teacher.phone && (
+                        <a
+                          href={`tel:${teacher.phone.replace(/[^0-9+]/g, '')}`}
+                          className="inline-flex items-center gap-1 text-[11px] text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 px-1.5 py-0.2 rounded transition-colors font-medium"
+                          title={`${teacher.name} isimli öğretmeni ara`}
+                        >
+                          <Phone className="w-3 h-3 text-emerald-600" />
+                          <span>{teacher.phone}</span>
+                        </a>
+                      )}
                       {log?.note && (
                         <button
                           disabled={isWeekendDay}
