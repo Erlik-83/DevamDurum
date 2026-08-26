@@ -171,3 +171,65 @@ export function getDayOfWeekFromDate(dateStr: string): 'Pazartesi' | 'Salı' | '
       return 'Pazartesi';
   }
 }
+
+/**
+ * Normalizes a Turkish phone number ensuring it starts with '0' (or '+90')
+ * Handles formats like '5321234567', '905321234567', '+905321234567', '0532 123 45 67'
+ */
+export function normalizePhoneNumber(phone?: string): string {
+  if (!phone) return '';
+  let clean = phone.replace(/[^0-9+]/g, '');
+  if (clean.startsWith('+90')) {
+    clean = '0' + clean.slice(3);
+  } else if (clean.startsWith('90') && clean.length === 12) {
+    clean = '0' + clean.slice(2);
+  } else if (clean.length === 10 && clean.startsWith('5')) {
+    clean = '0' + clean;
+  }
+  return clean;
+}
+
+/**
+ * Prepares a phone number for href="tel:..."
+ * Ensures valid dialing format with leading '0' or '+90'
+ */
+export function formatPhoneForCall(phone?: string): string {
+  if (!phone) return '';
+  const normalized = normalizePhoneNumber(phone);
+  const digitsOnly = normalized.replace(/[^0-9]/g, '');
+  
+  if (digitsOnly.length === 11 && digitsOnly.startsWith('0')) {
+    return digitsOnly; // e.g. '05321234567'
+  }
+  if (digitsOnly.length === 10 && digitsOnly.startsWith('5')) {
+    return `0${digitsOnly}`;
+  }
+  return normalized || phone;
+}
+
+/**
+ * Formats a phone number for clean UI display (e.g. "0532 123 45 67")
+ */
+export function formatPhoneDisplay(phone?: string, mask: boolean = false): string {
+  if (!phone) return '';
+  const clean = normalizePhoneNumber(phone);
+  
+  if (mask) {
+    if (clean.length >= 11) {
+      return `${clean.slice(0, 4)} *** ** ${clean.slice(-2)}`;
+    }
+    if (clean.length >= 7) {
+      return `${clean.slice(0, 4)} *** ** ${clean.slice(-2)}`;
+    }
+    return '05** *** ** **';
+  }
+  
+  if (clean.length === 11 && clean.startsWith('0')) {
+    return `${clean.slice(0, 4)} ${clean.slice(4, 7)} ${clean.slice(7, 9)} ${clean.slice(9, 11)}`;
+  }
+  if (clean.length === 10 && clean.startsWith('5')) {
+    return `0${clean.slice(0, 3)} ${clean.slice(3, 6)} ${clean.slice(6, 8)} ${clean.slice(8, 10)}`;
+  }
+  
+  return phone;
+}

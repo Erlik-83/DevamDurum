@@ -22,7 +22,7 @@ import {
   Lock,
   Phone,
 } from 'lucide-react';
-import { cn, isWeekend } from '@/lib/utils';
+import { cn, isWeekend, formatPhoneForCall, formatPhoneDisplay } from '@/lib/utils';
 import { formatTeacherLevel, getTeacherTaughtLevels } from '@/lib/pdfScheduleParser';
 
 interface AttendanceTableProps {
@@ -363,12 +363,12 @@ export function AttendanceTable({ selectedDate }: AttendanceTableProps) {
                       <span>{teacher.branch}</span>
                       {teacher.phone && (
                         <a
-                          href={`tel:${teacher.phone.replace(/[^0-9+]/g, '')}`}
+                          href={`tel:${formatPhoneForCall(teacher.phone)}`}
                           className="inline-flex items-center gap-1 text-[11px] text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 px-1.5 py-0.2 rounded transition-colors font-medium"
                           title={`${teacher.name} isimli öğretmeni ara`}
                         >
                           <Phone className="w-3 h-3 text-emerald-600" />
-                          <span>{teacher.phone}</span>
+                          <span>{formatPhoneDisplay(teacher.phone)}</span>
                         </a>
                       )}
                       {log?.note && (

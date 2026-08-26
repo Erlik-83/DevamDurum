@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 import { Teacher, SchoolLevel, AttendanceLog, SubstitutionLog, ScheduleSlot, DayOfWeek } from './types';
-import { formatShortDate, DAILY_LESSON_PERIODS, DAYS_OF_WEEK } from './utils';
+import { formatShortDate, DAILY_LESSON_PERIODS, DAYS_OF_WEEK, normalizePhoneNumber } from './utils';
 
 export interface ParsedTeacherRow {
   name: string;
@@ -176,7 +176,8 @@ export function parseTeacherExcel(fileBuffer: ArrayBuffer): Promise<ParsedTeache
         const rawLevel = row[levelColIdx];
         const branch = String(row[branchColIdx] || 'Genel').trim();
         const email = emailColIdx >= 0 && row[emailColIdx] ? String(row[emailColIdx]).trim() : undefined;
-        const phone = phoneColIdx >= 0 && row[phoneColIdx] ? String(row[phoneColIdx]).trim() : undefined;
+        const rawPhone = phoneColIdx >= 0 && row[phoneColIdx] ? String(row[phoneColIdx]).trim() : undefined;
+        const phone = rawPhone ? normalizePhoneNumber(rawPhone) : undefined;
         const tcNo = tcColIdx >= 0 && row[tcColIdx] ? String(row[tcColIdx]).trim() : undefined;
 
         // Accurately parse school level

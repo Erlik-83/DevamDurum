@@ -29,7 +29,7 @@ import {
   EyeOff,
   ShieldCheck,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatPhoneForCall, formatPhoneDisplay } from '@/lib/utils';
 import { formatTeacherLevel, getTeacherTaughtLevels } from '@/lib/pdfScheduleParser';
 
 export default function TeachersPage() {
@@ -53,11 +53,7 @@ export default function TeachersPage() {
   };
 
   const maskPhone = (phone?: string) => {
-    if (!phone) return '';
-    if (showSensitiveData) return phone;
-    const clean = phone.replace(/\s+/g, '');
-    if (clean.length < 7) return '05** *** ** **';
-    return `${clean.slice(0, 4)} *** ** ${clean.slice(-2)}`;
+    return formatPhoneDisplay(phone, !showSensitiveData);
   };
 
   // Filter teachers (supporting multi-level teachers e.g. İlkokul / Ortaokul)
@@ -298,15 +294,15 @@ export default function TeachersPage() {
                     {teacher.phone && (
                       <div className="flex items-center justify-between gap-1.5">
                         <a
-                          href={`tel:${teacher.phone.replace(/[^0-9+]/g, '')}`}
-                          className="flex items-center gap-1.5 truncate text-slate-700 hover:text-emerald-700 hover:underline transition-colors group/call"
+                          href={`tel:${formatPhoneForCall(teacher.phone)}`}
+                          className="flex items-center gap-1.5 truncate text-slate-700 hover:text-emerald-700 hover:underline transition-colors group/call font-medium"
                           title={`${teacher.name} isimli öğretmeni telefonla ara`}
                         >
                           <Phone className="w-3.5 h-3.5 text-emerald-600 group-hover/call:scale-110 transition-transform flex-shrink-0" />
                           <span className="font-semibold">{maskPhone(teacher.phone)}</span>
                         </a>
                         <a
-                          href={`tel:${teacher.phone.replace(/[^0-9+]/g, '')}`}
+                          href={`tel:${formatPhoneForCall(teacher.phone)}`}
                           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 text-[10px] font-bold transition-all shadow-2xs flex-shrink-0"
                           title="Doğrudan Telefonla Ara"
                         >

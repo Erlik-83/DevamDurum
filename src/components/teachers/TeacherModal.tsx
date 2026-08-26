@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { BRANCH_LIST, SCHOOL_LEVELS } from '@/lib/utils';
+import { BRANCH_LIST, SCHOOL_LEVELS, normalizePhoneNumber } from '@/lib/utils';
 import { Teacher, SchoolLevel } from '@/lib/types';
 import { useAppStore } from '@/lib/store';
 import { User, BookOpen, GraduationCap, Phone, Mail } from 'lucide-react';
@@ -45,7 +45,7 @@ export function TeacherModal({ isOpen, onClose, teacherToEdit }: TeacherModalPro
       setName('');
       setBranch(BRANCH_LIST[0]);
       setCustomBranch('');
-      setLevel('Ortaokul');
+      setLevel('Lise');
       setPhone('');
       setEmail('');
       setTcNo('');
@@ -56,18 +56,24 @@ export function TeacherModal({ isOpen, onClose, teacherToEdit }: TeacherModalPro
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError('Lütfen öğretmen adını ve soyadını giriniz.');
+      setError('Öğretmen adı soyadı zorunludur.');
       return;
     }
 
-    const finalBranch = branch === 'Diğer' ? (customBranch.trim() || 'Genel') : branch;
+    const finalBranch = branch === 'Diğer' ? customBranch.trim() : branch;
+    if (!finalBranch) {
+      setError('Lütfen geçerli bir branş belirtiniz.');
+      return;
+    }
+
+    const normalizedPhone = phone.trim() ? normalizePhoneNumber(phone.trim()) : undefined;
 
     if (teacherToEdit) {
       updateTeacher(teacherToEdit.id, {
         name: name.trim(),
         branch: finalBranch,
         level,
-        phone: phone.trim() || undefined,
+        phone: normalizedPhone,
         email: email.trim() || undefined,
         tcNo: tcNo.trim() || undefined,
       });
@@ -76,7 +82,7 @@ export function TeacherModal({ isOpen, onClose, teacherToEdit }: TeacherModalPro
         name: name.trim(),
         branch: finalBranch,
         level,
-        phone: phone.trim() || undefined,
+        phone: normalizedPhone,
         email: email.trim() || undefined,
         tcNo: tcNo.trim() || undefined,
         isActive: true,
