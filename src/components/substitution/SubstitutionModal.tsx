@@ -287,7 +287,7 @@ export function SubstitutionModal({
         <div>
           <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
             <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-indigo-600" />
+              <Clock className="w-3.5 h-3.5 text-orange-600" />
               Doldurulacak Ders Saati <span className="text-rose-500">*</span>
             </label>
             <div className="flex items-center gap-2 text-[10px]">
@@ -315,7 +315,7 @@ export function SubstitutionModal({
                     isSelected
                       ? hasClass
                         ? 'bg-rose-600 text-white border-rose-700 shadow-md ring-2 ring-rose-500/40 font-bold'
-                        : 'bg-indigo-600 text-white border-indigo-700 shadow-md ring-2 ring-indigo-500/40 font-bold'
+                        : 'bg-orange-600 text-white border-orange-700 shadow-md ring-2 ring-orange-500/40 font-bold'
                       : hasClass
                       ? 'bg-rose-50/90 text-rose-900 border-rose-200 hover:bg-rose-100 hover:border-rose-300 font-semibold'
                       : 'bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100 opacity-70'
@@ -492,7 +492,7 @@ export function SubstitutionModal({
                 key={cls}
                 type="button"
                 onClick={() => setClassInfo(cls)}
-                className="text-[10px] bg-slate-100 text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 px-1.5 py-0.5 rounded border border-slate-200"
+                className="text-[10px] bg-slate-100 text-slate-600 hover:bg-orange-50 hover:text-orange-800 px-1.5 py-0.5 rounded border border-slate-200 font-medium"
               >
                 {cls}
               </button>
@@ -543,7 +543,7 @@ export function SubstitutionModal({
             <Button type="button" variant="outline" size="sm" onClick={onClose}>
               İptal
             </Button>
-            <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold">
+            <Button type="submit" size="sm" className="bg-orange-600 hover:bg-orange-700 text-white font-bold shadow-sm shadow-orange-600/20">
               {substitutionToEdit ? 'Değişiklikleri Kaydet' : 'İkameyi Kaydet'}
             </Button>
           </div>

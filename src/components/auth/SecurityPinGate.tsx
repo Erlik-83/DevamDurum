@@ -54,23 +54,23 @@ export function SecurityPinGate({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white">
-      <div className="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center text-slate-100 animate-in fade-in zoom-in-95 duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-950 via-slate-950 to-emerald-900 flex items-center justify-center p-4 selection:bg-emerald-500 selection:text-white">
+      <div className="w-full max-w-md bg-slate-900/95 backdrop-blur-xl border border-emerald-800/60 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center text-slate-100 animate-in fade-in zoom-in-95 duration-300">
         {/* School Icon Header */}
         <div className="flex flex-col items-center gap-3">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-emerald-900/50 ring-2 ring-emerald-400/30">
             <Lock className="w-8 h-8" />
           </div>
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[11px] font-semibold mb-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-              <span>KVKK & Kurumsal Güvenlik Koruması</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-400/30 text-orange-300 text-[11px] font-bold mb-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-orange-400" />
+              <span>Doğa Koleji • Kurumsal Yönetici Girişi</span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">
-              DevamDurum <span className="text-indigo-400">PRO</span>
+              <span>Doğa</span> <span className="text-orange-400">DevamDurum</span> <span className="text-xs text-emerald-400 font-bold uppercase bg-emerald-900/80 px-2 py-0.5 rounded border border-emerald-700">PRO</span>
             </h1>
-            <p className="text-xs text-slate-400 mt-1">
-              Öğretmen devam takip ve ders programı verilerine erişmek için lütfen <strong>Okul Yönetici PIN Kodunu</strong> giriniz.
+            <p className="text-xs text-slate-300 mt-1">
+              Öğretmen devam takip ve ders programı verilerine erişmek için lütfen <strong>Yönetici PIN Kodunu</strong> giriniz.
             </p>
           </div>
         </div>
@@ -89,7 +89,7 @@ export function SecurityPinGate({ children }: { children: React.ReactNode }) {
             <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
               <span>Yönetici PIN Kodu:</span>
               <span className="text-[10px] text-slate-400 font-normal">
-                (Varsayılan İlk PIN: <code className="bg-slate-800 px-1 py-0.5 rounded text-indigo-300 font-bold">1453</code>)
+                (Varsayılan İlk PIN: <code className="bg-slate-800 px-1 py-0.5 rounded text-orange-300 font-bold">1453</code>)
               </span>
             </label>
             <div className="relative">
@@ -105,7 +105,7 @@ export function SecurityPinGate({ children }: { children: React.ReactNode }) {
                 }}
                 placeholder="PIN Kodunu Giriniz..."
                 autoFocus
-                className="pl-10 pr-10 h-11 bg-slate-800/80 border-slate-700 text-white placeholder:text-slate-500 text-center tracking-widest text-lg font-bold rounded-xl focus:border-indigo-500 focus:ring-indigo-500"
+                className="pl-10 pr-10 h-11 bg-slate-800/80 border-slate-700 text-white placeholder:text-slate-500 text-center tracking-widest text-lg font-bold rounded-xl focus:border-emerald-500 focus:ring-emerald-500"
               />
               <button
                 type="button"
@@ -123,7 +123,7 @@ export function SecurityPinGate({ children }: { children: React.ReactNode }) {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900"
+                className="rounded border-slate-700 bg-slate-800 text-emerald-600 focus:ring-emerald-500 focus:ring-offset-slate-900"
               />
               <span>Bu cihazda beni hatırla</span>
             </label>
@@ -131,7 +131,7 @@ export function SecurityPinGate({ children }: { children: React.ReactNode }) {
 
           <Button
             type="submit"
-            className="w-full h-11 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 text-sm gap-2 transition-all active:scale-[0.99]"
+            className="w-full h-11 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-900/50 text-sm gap-2 transition-all active:scale-[0.99]"
           >
             <Lock className="w-4 h-4" />
             Sisteme Güvenli Giriş Yap
@@ -140,7 +140,7 @@ export function SecurityPinGate({ children }: { children: React.ReactNode }) {
 
         {/* Security Notice Footer */}
         <div className="pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 leading-relaxed flex items-center justify-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+          <Sparkles className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
           <span>Giriş yaptıktan sonra PIN kodunuzu dilediğiniz zaman değiştirebilirsiniz.</span>
         </div>
       </div>

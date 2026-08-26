@@ -26,7 +26,7 @@ interface SubstitutionLeaderboardProps {
   endDate: string;
 }
 
-const COLORS = ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#64748b'];
+const COLORS = ['#16a34a', '#ea580c', '#059669', '#f97316', '#15803d', '#fb923c', '#047857'];
 
 export function SubstitutionLeaderboard({
   teachers,
@@ -81,7 +81,7 @@ export function SubstitutionLeaderboard({
       <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 gap-2">
         <div>
           <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <HeartHandshake className="w-5 h-5 text-indigo-600" />
+            <HeartHandshake className="w-5 h-5 text-emerald-600" />
             En Çok Ders Dolduran (İkame) Öğretmenler
           </CardTitle>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -95,7 +95,7 @@ export function SubstitutionLeaderboard({
             onClick={() => setViewMode('bars')}
             className={`px-3 py-1 rounded-md font-medium transition-all ${
               viewMode === 'bars'
-                ? 'bg-white text-slate-900 font-bold shadow-sm'
+                ? 'bg-emerald-700 text-white font-bold shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -105,7 +105,7 @@ export function SubstitutionLeaderboard({
             onClick={() => setViewMode('pie')}
             className={`px-3 py-1 rounded-md font-medium transition-all ${
               viewMode === 'pie'
-                ? 'bg-white text-slate-900 font-bold shadow-sm'
+                ? 'bg-emerald-700 text-white font-bold shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -141,7 +141,7 @@ export function SubstitutionLeaderboard({
                     <Bar
                       dataKey="DoldurulanDers"
                       name="Doldurulan Ders Sayısı"
-                      fill="#4f46e5"
+                      fill="#16a34a"
                       radius={[4, 4, 0, 0]}
                     />
                   </BarChart>

@@ -86,13 +86,13 @@ export function WeeklyScheduleGrid({ selectedTeacherId }: WeeklyScheduleGridProp
       {/* Teacher Schedule Header */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 font-extrabold flex items-center justify-center text-sm shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold flex items-center justify-center text-sm shadow-xs">
             {teacher.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-base text-slate-900">{teacher.name}</h3>
-              <Badge variant="secondary" className="text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              <Badge variant="secondary" className="text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                 {formatTeacherLevel(teacher, scheduleSlots)}
               </Badge>
             </div>
@@ -161,7 +161,7 @@ export function WeeklyScheduleGrid({ selectedTeacherId }: WeeklyScheduleGridProp
               <tr key={period.hour} className="hover:bg-slate-50/40 transition-colors">
                 {/* Period Column */}
                 <td className="p-2.5 border-r border-slate-200 font-semibold bg-slate-50/50">
-                  <div className="font-bold text-indigo-950">{period.label}</div>
+                  <div className="font-bold text-emerald-950">{period.label}</div>
                   <div className="text-[10px] text-slate-500 font-normal">{period.timeRange}</div>
                 </td>
 
@@ -178,8 +178,8 @@ export function WeeklyScheduleGrid({ selectedTeacherId }: WeeklyScheduleGridProp
                       onClick={() => !isEditing && handleStartEdit(day, period.hour)}
                       className={`p-2 text-center border-r border-slate-100 last:border-r-0 cursor-pointer transition-all ${
                         hasClass
-                          ? 'bg-indigo-50/40 hover:bg-indigo-100/60'
-                          : 'hover:bg-emerald-50/50'
+                          ? 'bg-emerald-50/50 hover:bg-emerald-100/60'
+                          : 'hover:bg-emerald-50/30'
                       }`}
                     >
                       {isEditing ? (
@@ -199,17 +199,17 @@ export function WeeklyScheduleGrid({ selectedTeacherId }: WeeklyScheduleGridProp
                           <Button
                             size="sm"
                             onClick={handleSaveEdit}
-                            className="h-7 w-7 p-0 bg-indigo-600 hover:bg-indigo-700 text-white"
+                            className="h-7 w-7 p-0 bg-emerald-600 hover:bg-emerald-700 text-white"
                           >
                             <Check className="w-3.5 h-3.5" />
                           </Button>
                         </div>
                       ) : hasClass ? (
-                        <div className="py-1 px-2 rounded-lg bg-indigo-100/80 text-indigo-900 border border-indigo-200 font-black text-xs inline-block shadow-2xs">
+                        <div className="py-1 px-2 rounded-lg bg-emerald-100/90 text-emerald-950 border border-emerald-300 font-black text-xs inline-block shadow-2xs">
                           {slot?.classInfo}
                         </div>
                       ) : (
-                        <span className="text-[11px] text-emerald-700 font-semibold bg-emerald-50/80 px-2 py-0.5 rounded border border-emerald-200/50 inline-block">
+                        <span className="text-[11px] text-slate-400 font-medium bg-slate-50 px-2 py-0.5 rounded border border-slate-200/50 inline-block">
                           Müsait (Boş)
                         </span>
                       )}

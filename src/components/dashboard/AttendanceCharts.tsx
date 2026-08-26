@@ -140,7 +140,7 @@ export function AttendanceCharts({
             onClick={() => setChartType('level')}
             className={`px-3 py-1 rounded-md font-medium transition-all ${
               chartType === 'level'
-                ? 'bg-white text-slate-900 font-bold shadow-sm'
+                ? 'bg-emerald-700 text-white font-bold shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -150,7 +150,7 @@ export function AttendanceCharts({
             onClick={() => setChartType('trend')}
             className={`px-3 py-1 rounded-md font-medium transition-all ${
               chartType === 'trend'
-                ? 'bg-white text-slate-900 font-bold shadow-sm'
+                ? 'bg-emerald-700 text-white font-bold shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -160,7 +160,7 @@ export function AttendanceCharts({
             onClick={() => setChartType('branch')}
             className={`px-3 py-1 rounded-md font-medium transition-all ${
               chartType === 'branch'
-                ? 'bg-white text-slate-900 font-bold shadow-sm'
+                ? 'bg-emerald-700 text-white font-bold shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >

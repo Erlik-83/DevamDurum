@@ -83,7 +83,7 @@ export function DailyScheduleMatrix({ selectedDate }: DailyScheduleMatrixProps) 
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-indigo-600" />
+            <Clock className="w-4 h-4 text-orange-600" />
             Günlük 8 Derslik İkame Matrisi (Zaman Çizelgesi)
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -95,7 +95,7 @@ export function DailyScheduleMatrix({ selectedDate }: DailyScheduleMatrixProps) 
           <span className="flex items-center gap-1.5 text-rose-700 font-bold bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200 shadow-2xs">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" /> Kırmızı: Dersi Var (İkame Bekliyor)
           </span>
-          <span className="flex items-center gap-1.5 text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-2xs">
+          <span className="flex items-center gap-1.5 text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-2xs">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Yeşil: İkame Atandı
           </span>
           <span className="flex items-center gap-1.5 text-slate-500 font-medium bg-slate-100 px-2.5 py-1 rounded-lg">
@@ -129,7 +129,7 @@ export function DailyScheduleMatrix({ selectedDate }: DailyScheduleMatrixProps) 
                     key={period.hour}
                     className="p-2.5 text-center border-r border-slate-200 last:border-r-0 min-w-[110px]"
                   >
-                    <div className="font-extrabold text-indigo-900">{period.label}</div>
+                    <div className="font-extrabold text-emerald-950">{period.label}</div>
                     <div className="text-[10px] font-normal text-slate-500 mt-0.5">
                       {period.timeRange}
                     </div>
@@ -156,7 +156,7 @@ export function DailyScheduleMatrix({ selectedDate }: DailyScheduleMatrixProps) 
                           <div className="flex items-center gap-1 text-[10px] text-slate-500 flex-wrap">
                             <span>{teacher.branch}</span>
                             <span>•</span>
-                            <span className="font-semibold text-indigo-700 bg-indigo-50 px-1 py-0.2 rounded border border-indigo-200">
+                            <span className="font-bold text-emerald-800 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">
                               {formatTeacherLevel(teacher, scheduleSlots)}
                             </span>
                             <span>•</span>

@@ -126,9 +126,9 @@ export function ExcelImportModal({ isOpen, onClose }: ExcelImportModalProps) {
     >
       <div className="space-y-4">
         {/* Template download notice */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs text-indigo-950">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 bg-emerald-50/70 border border-emerald-100 rounded-xl text-xs text-emerald-950">
           <div className="flex items-center gap-2">
-            <HelpCircle className="w-4 h-4 text-indigo-600 flex-shrink-0" />
+            <HelpCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>
               Excel dosyanızda şu başlıklar yer almalıdır: <strong>Öğretmen Adı Soyadı</strong>, <strong>Kademesi</strong>, <strong>Branşı</strong>, <strong>Mail Adresi</strong>, <strong>Telefon Numarası</strong>, <strong>TC Kimlik Numarası</strong>.
             </span>
@@ -138,7 +138,7 @@ export function ExcelImportModal({ isOpen, onClose }: ExcelImportModalProps) {
             variant="outline"
             size="sm"
             onClick={downloadTeacherTemplate}
-            className="flex-shrink-0 bg-white hover:bg-indigo-50 text-indigo-700 border-indigo-200 text-xs h-7 gap-1.5 font-semibold shadow-xs"
+            className="flex-shrink-0 bg-white hover:bg-emerald-50 text-emerald-800 border-emerald-300 text-xs h-7 gap-1.5 font-bold shadow-xs"
           >
             <Download className="w-3.5 h-3.5" />
             Boş Excel Şablonu İndir
@@ -171,8 +171,8 @@ export function ExcelImportModal({ isOpen, onClose }: ExcelImportModalProps) {
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-3 ${
               isDragging
-                ? 'border-indigo-500 bg-indigo-50/50 scale-[0.99]'
-                : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50/50'
+                ? 'border-emerald-500 bg-emerald-50/50 scale-[0.99]'
+                : 'border-slate-300 hover:border-emerald-400 hover:bg-slate-50/50'
             }`}
           >
             <input
@@ -182,7 +182,7 @@ export function ExcelImportModal({ isOpen, onClose }: ExcelImportModalProps) {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="w-14 h-14 rounded-2xl bg-indigo-100/70 text-indigo-600 flex items-center justify-center shadow-inner">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-100/70 text-emerald-700 flex items-center justify-center shadow-inner">
               <UploadCloud className="w-8 h-8" />
             </div>
             <div>
@@ -261,7 +261,7 @@ export function ExcelImportModal({ isOpen, onClose }: ExcelImportModalProps) {
                       </td>
                       <td className="p-2.5 font-bold text-slate-900">{row.name || '-'}</td>
                       <td className="p-2.5">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                           {row.level}
                         </span>
                       </td>
@@ -287,7 +287,7 @@ export function ExcelImportModal({ isOpen, onClose }: ExcelImportModalProps) {
               type="button"
               disabled={validCount === 0}
               onClick={handleConfirmImport}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-sm shadow-emerald-600/20"
             >
               {validCount} Öğretmeni İçe Aktar ve Kaydet
             </Button>

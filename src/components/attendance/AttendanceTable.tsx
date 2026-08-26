@@ -247,7 +247,7 @@ export function AttendanceTable({ selectedDate }: AttendanceTableProps) {
               className={cn(
                 'px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-colors',
                 selectedLevel === lvl
-                  ? 'bg-slate-900 text-white font-semibold shadow-sm'
+                  ? 'bg-emerald-700 text-white font-bold shadow-sm'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               )}
             >
@@ -268,7 +268,7 @@ export function AttendanceTable({ selectedDate }: AttendanceTableProps) {
               ? 'border-slate-200 text-slate-400 bg-slate-100 cursor-not-allowed opacity-60'
               : allFilteredPresent
               ? 'border-amber-300 text-amber-900 bg-amber-50/80 hover:bg-amber-100'
-              : 'border-emerald-200 text-emerald-800 bg-emerald-50/60 hover:bg-emerald-100/80'
+              : 'border-emerald-300 text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100'
           )}
           title={
             isWeekendDay
@@ -349,7 +349,7 @@ export function AttendanceTable({ selectedDate }: AttendanceTableProps) {
                       <h4 className="font-semibold text-sm text-slate-900 truncate">
                         {teacher.name}
                       </h4>
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-emerald-50 text-emerald-800 border border-emerald-200">
                         {formatTeacherLevel(teacher, scheduleSlots)}
                       </Badge>
                       {status === 'gec' && log?.lateMinutes && (
@@ -371,9 +371,9 @@ export function AttendanceTable({ selectedDate }: AttendanceTableProps) {
                               note: log.note,
                             })
                           }
-                          className="inline-flex items-center gap-1 text-slate-600 hover:text-indigo-600 font-medium bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-[11px] transition-colors"
+                          className="inline-flex items-center gap-1 text-slate-600 hover:text-emerald-700 font-medium bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-[11px] transition-colors"
                         >
-                          <MessageSquare className="w-3 h-3 text-indigo-500" />
+                          <MessageSquare className="w-3 h-3 text-emerald-600" />
                           <span className="truncate max-w-[200px]">{log.note}</span>
                         </button>
                       )}
@@ -391,15 +391,15 @@ export function AttendanceTable({ selectedDate }: AttendanceTableProps) {
                       disabled={isWeekendDay}
                       onClick={() => setActiveSubTeacher(teacher)}
                       className={cn(
-                        'h-8 px-2.5 text-xs font-semibold gap-1 transition-all mr-1',
+                        'h-8 px-2.5 text-xs font-bold gap-1 transition-all mr-1 shadow-2xs',
                         isWeekendDay
                           ? 'border-slate-200 text-slate-400 bg-slate-100 cursor-not-allowed opacity-50'
                           : hasSub
-                          ? 'border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                          : 'border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 animate-pulse'
+                          ? 'border-emerald-400 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                          : 'border-orange-300 bg-orange-50 text-orange-800 hover:bg-orange-100 animate-pulse'
                       )}
                     >
-                      <ArrowLeftRight className="w-3.5 h-3.5" />
+                      <ArrowLeftRight className="w-3.5 h-3.5 text-orange-600" />
                       <span>{hasSub ? 'İkame Atandı' : 'İkame Ata'}</span>
                     </Button>
                   )}

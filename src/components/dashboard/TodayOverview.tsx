@@ -61,7 +61,7 @@ export function TodayOverview({
             </p>
           </div>
           <Link href="/devam-takip">
-            <Button variant="ghost" size="sm" className="text-xs text-indigo-600 hover:bg-indigo-50">
+            <Button variant="ghost" size="sm" className="text-xs text-emerald-700 hover:bg-emerald-50 font-bold">
               Devam Paneline Git
             </Button>
           </Link>
@@ -69,9 +69,9 @@ export function TodayOverview({
 
         <CardContent>
           {absentLogs.length === 0 ? (
-            <div className="py-8 text-center bg-emerald-50/50 rounded-xl border border-emerald-100 p-4">
+            <div className="py-8 text-center bg-emerald-50/70 rounded-xl border border-emerald-200 p-4">
               <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-              <p className="text-xs font-semibold text-emerald-900">
+              <p className="text-xs font-bold text-emerald-950">
                 Harika! Bugün devamsız öğretmen bulunmuyor.
               </p>
               <p className="text-[11px] text-emerald-700 mt-0.5">
@@ -91,7 +91,7 @@ export function TodayOverview({
                   >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-xs text-slate-900">
+                        <span className="font-bold text-xs text-slate-900">
                           {teacher?.name || 'Bilinmeyen'}
                         </span>
                         <Badge
@@ -111,13 +111,13 @@ export function TodayOverview({
                       size="sm"
                       variant="outline"
                       onClick={() => setSelectedAbsentTeacherId(log.teacherId)}
-                      className={`text-xs h-7 px-2.5 gap-1 font-semibold flex-shrink-0 ${
+                      className={`text-xs h-7 px-2.5 gap-1 font-bold flex-shrink-0 ${
                         hasSub
-                          ? 'border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                          : 'border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+                          ? 'border-emerald-400 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                          : 'border-orange-300 bg-orange-50 text-orange-800 hover:bg-orange-100'
                       }`}
                     >
-                      <ArrowLeftRight className="w-3 h-3" />
+                      <ArrowLeftRight className="w-3 h-3 text-orange-600" />
                       <span>{hasSub ? 'İkame Atandı' : 'İkame Ata'}</span>
                     </Button>
                   </div>
@@ -133,7 +133,7 @@ export function TodayOverview({
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <div>
             <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <ArrowLeftRight className="w-5 h-5 text-indigo-600" />
+              <ArrowLeftRight className="w-5 h-5 text-orange-600" />
               Bugünkü İkame (Ders Doldurma) Durumu ({todaySubs.length})
             </CardTitle>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -141,7 +141,7 @@ export function TodayOverview({
             </p>
           </div>
           <Link href="/ikame-yonetimi">
-            <Button variant="ghost" size="sm" className="text-xs text-indigo-600 hover:bg-indigo-50">
+            <Button variant="ghost" size="sm" className="text-xs text-emerald-700 hover:bg-emerald-50 font-bold">
               Tümünü Yönet
             </Button>
           </Link>
@@ -163,10 +163,10 @@ export function TodayOverview({
                 return (
                   <div
                     key={sub.id}
-                    className="p-2.5 rounded-xl bg-indigo-50/40 border border-indigo-100/80 flex items-center justify-between text-xs gap-2"
+                    className="p-2.5 rounded-xl bg-orange-50/40 border border-orange-200/70 flex items-center justify-between text-xs gap-2"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-extrabold bg-indigo-600 text-white px-2 py-0.5 rounded text-[11px]">
+                      <span className="font-extrabold bg-orange-600 text-white px-2 py-0.5 rounded text-[11px]">
                         {sub.lessonHour}. Ders
                       </span>
                       <span className="font-bold text-slate-800 bg-white px-1.5 py-0.5 rounded border border-slate-200 text-[11px]">
@@ -175,11 +175,11 @@ export function TodayOverview({
                     </div>
 
                     <div className="text-right truncate min-w-0">
-                      <span className="font-semibold text-emerald-800">
+                      <span className="font-bold text-emerald-800">
                         {subT?.name || 'Bilinmiyor'}
                       </span>
                       <span className="text-slate-400 mx-1">➜</span>
-                      <span className="text-rose-700 text-[11px]">
+                      <span className="text-rose-700 text-[11px] font-medium">
                         {absent?.name || 'Bilinmiyor'}
                       </span>
                     </div>

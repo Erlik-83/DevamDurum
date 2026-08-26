@@ -93,7 +93,7 @@ export default function AttendancePage() {
               variant="outline"
               size="sm"
               onClick={() => setSelectedDate(getTodayString())}
-              className="h-9 text-xs font-semibold text-indigo-700 bg-indigo-50/60 border-indigo-200 hover:bg-indigo-100"
+              className="h-9 text-xs font-bold text-emerald-800 bg-emerald-50/80 border-emerald-300 hover:bg-emerald-100 shadow-2xs"
             >
               Bugüne Dön
             </Button>

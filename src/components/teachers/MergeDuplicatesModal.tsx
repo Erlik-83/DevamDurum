@@ -76,13 +76,13 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
     >
       <div className="space-y-4">
         {/* Info Header */}
-        <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-950 flex items-start gap-2.5">
-          <Sparkles className="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+        <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-xs text-emerald-950 flex items-start gap-2.5">
+          <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-indigo-900">
+            <p className="font-bold text-emerald-900">
               Akıllı İsim Benzerlik Taraması:
             </p>
-            <p className="text-[11px] text-indigo-800 mt-0.5">
+            <p className="text-[11px] text-emerald-800 mt-0.5">
               İki kayıt birleştirildiğinde tüm devamsızlık kayıtları, ikame görevlendirmeleri ve ders programı tek bir öğretmende toplanır, mükerrer olan kayıt silinir.
             </p>
           </div>
@@ -117,7 +117,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                   size="sm"
                   variant="outline"
                   onClick={handleMergeAll}
-                  className="h-7 text-[11px] border-indigo-200 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100"
+                  className="h-7 text-[11px] border-emerald-200 text-emerald-800 bg-emerald-50/50 hover:bg-emerald-100 font-bold"
                 >
                   <Layers className="w-3.5 h-3.5 mr-1" />
                   Tümünü Otomatik Birleştir
@@ -163,7 +163,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                       className={cn(
                         'p-2.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between gap-1',
                         isASelected
-                          ? 'border-indigo-600 bg-indigo-50/80 ring-2 ring-indigo-600/20'
+                          ? 'border-emerald-600 bg-emerald-50/80 ring-2 ring-emerald-600/20'
                           : 'border-slate-200 bg-white hover:bg-slate-50'
                       )}
                     >
@@ -174,7 +174,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                           name={`primary_${pair.id}`}
                           checked={isASelected}
                           onChange={() => {}}
-                          className="text-indigo-600 focus:ring-indigo-500"
+                          className="text-emerald-600 focus:ring-emerald-500"
                         />
                       </div>
                       <div className="flex items-center gap-1.5 text-[10px] text-slate-500 flex-wrap">
@@ -189,7 +189,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                         )}
                       </div>
                       {isASelected && (
-                        <span className="text-[10px] font-bold text-indigo-700 mt-1">
+                        <span className="text-[10px] font-bold text-emerald-800 mt-1">
                           ✓ Ana İsim Olarak Saklanacak
                         </span>
                       )}
@@ -206,7 +206,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                       className={cn(
                         'p-2.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between gap-1',
                         !isASelected
-                          ? 'border-indigo-600 bg-indigo-50/80 ring-2 ring-indigo-600/20'
+                          ? 'border-emerald-600 bg-emerald-50/80 ring-2 ring-emerald-600/20'
                           : 'border-slate-200 bg-white hover:bg-slate-50'
                       )}
                     >
@@ -217,7 +217,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                           name={`primary_${pair.id}`}
                           checked={!isASelected}
                           onChange={() => {}}
-                          className="text-indigo-600 focus:ring-indigo-500"
+                          className="text-emerald-600 focus:ring-emerald-500"
                         />
                       </div>
                       <div className="flex items-center gap-1.5 text-[10px] text-slate-500 flex-wrap">
@@ -232,7 +232,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                         )}
                       </div>
                       {!isASelected && (
-                        <span className="text-[10px] font-bold text-indigo-700 mt-1">
+                        <span className="text-[10px] font-bold text-emerald-800 mt-1">
                           ✓ Ana İsim Olarak Saklanacak
                         </span>
                       )}
@@ -244,7 +244,7 @@ export function MergeDuplicatesModal({ isOpen, onClose }: MergeDuplicatesModalPr
                     <Button
                       size="sm"
                       onClick={() => handleMergePair(pair)}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-8 gap-1.5 font-bold shadow-xs"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8 gap-1.5 font-bold shadow-xs shadow-emerald-600/20"
                     >
                       <span>Bu İki Kaydı Birleştir</span>
                       <ArrowRight className="w-3.5 h-3.5" />

@@ -98,7 +98,7 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-xs text-slate-500 font-medium">Panel Yükleniyor...</p>
         </div>
       </div>
@@ -110,8 +110,8 @@ export default function DashboardPage() {
       {/* Header & Filter Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Yönetici Analitik Paneli
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>Doğa Koleji • Yönetici Paneli</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
             Öğretmen devamlılığı, geç kalmalar ve ders doldurma süreçlerinin genel görünümü
@@ -128,7 +128,7 @@ export default function DashboardPage() {
                 onClick={() => setSelectedLevelFilter(lvl)}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                   selectedLevelFilter === lvl
-                    ? 'bg-white text-slate-900 font-bold shadow-xs'
+                    ? 'bg-emerald-700 text-white font-bold shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -143,7 +143,7 @@ export default function DashboardPage() {
               onClick={() => setDateRangeKey('today')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                 dateRangeKey === 'today'
-                  ? 'bg-indigo-600 text-white font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -153,7 +153,7 @@ export default function DashboardPage() {
               onClick={() => setDateRangeKey('week')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                 dateRangeKey === 'week'
-                  ? 'bg-indigo-600 text-white font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -163,7 +163,7 @@ export default function DashboardPage() {
               onClick={() => setDateRangeKey('month')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                 dateRangeKey === 'month'
-                  ? 'bg-indigo-600 text-white font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -173,7 +173,7 @@ export default function DashboardPage() {
               onClick={() => setDateRangeKey('custom')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                 dateRangeKey === 'custom'
-                  ? 'bg-indigo-600 text-white font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -224,7 +224,7 @@ export default function DashboardPage() {
           value={`${totalSubstitutions} Saat`}
           subtitle="Boş kalan dersler başarıyla dolduruldu"
           icon={ArrowLeftRight}
-          colorScheme="indigo"
+          colorScheme="orange"
         />
 
         <StatCard

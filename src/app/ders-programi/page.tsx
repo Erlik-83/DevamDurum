@@ -50,8 +50,8 @@ export default function SchedulePage() {
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <CalendarDays className="w-6 h-6 text-indigo-600" />
-            Haftalık Ders Programları & Müsaitlik Yönetimi
+            <CalendarDays className="w-6 h-6 text-emerald-700" />
+            <span>Doğa Koleji • Haftalık Ders Programları</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
             Öğretmenlerin 8 derslik haftalık ders çizelgelerini görüntüleyin, düzenleyin veya <strong>aSc PDF / Excel</strong> ile otomatik aktarın.
@@ -73,7 +73,7 @@ export default function SchedulePage() {
           <Button
             onClick={() => setIsImportModalOpen(true)}
             size="sm"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 text-xs font-semibold shadow-md shadow-indigo-600/20"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 text-xs font-bold shadow-md shadow-emerald-600/20"
           >
             <FileSpreadsheet className="w-4 h-4" />
             <span>Güncel aSc PDF Yükle</span>
@@ -82,16 +82,16 @@ export default function SchedulePage() {
       </div>
 
       {/* Dynamic PDF Notice Banner */}
-      <div className="p-3.5 bg-indigo-50/70 border border-indigo-100/90 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-indigo-950 shadow-xs">
+      <div className="p-3.5 bg-orange-50/70 border border-orange-200/90 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-orange-950 shadow-xs">
         <div className="flex items-center gap-2.5">
-          <Sparkles className="w-4 h-4 text-indigo-600 flex-shrink-0" />
+          <Sparkles className="w-4 h-4 text-orange-600 flex-shrink-0" />
           <span>
             <strong>Ders Programı Güncellemesi:</strong> Dönem içinde öğretmenlerin ders saatlerinde bir değişiklik olduğunda aSc'den aldığınız yeni PDF'i yükleyerek tüm sistemi saniyeler içinde güncelleyebilirsiniz.
           </span>
         </div>
         <button
           onClick={() => setIsImportModalOpen(true)}
-          className="text-xs text-indigo-700 hover:text-indigo-900 font-bold underline flex-shrink-0"
+          className="text-xs text-orange-700 hover:text-orange-900 font-bold underline flex-shrink-0"
         >
           Yeni PDF Dosyası Yükle →
         </button>
@@ -121,7 +121,7 @@ export default function SchedulePage() {
                   onClick={() => setSelectedLevel(lvl)}
                   className={`px-2 py-0.5 rounded-md font-medium whitespace-nowrap transition-colors ${
                     selectedLevel === lvl
-                      ? 'bg-slate-900 text-white font-bold'
+                      ? 'bg-emerald-700 text-white font-bold'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -141,7 +141,7 @@ export default function SchedulePage() {
                     className={cn(
                       'w-full text-left p-2 rounded-xl transition-all flex items-center justify-between gap-2',
                       isSelected
-                        ? 'bg-indigo-600 text-white shadow-sm font-semibold'
+                        ? 'bg-emerald-600 text-white shadow-sm font-bold'
                         : 'text-slate-700 hover:bg-slate-50'
                     )}
                   >
@@ -150,7 +150,7 @@ export default function SchedulePage() {
                       <p
                         className={cn(
                           'text-[10px] truncate',
-                          isSelected ? 'text-indigo-100' : 'text-slate-400'
+                          isSelected ? 'text-emerald-100' : 'text-slate-400'
                         )}
                       >
                         {t.branch}
@@ -160,7 +160,7 @@ export default function SchedulePage() {
                       className={cn(
                         'text-[10px] px-1.5 py-0.2 rounded font-bold',
                         isSelected
-                          ? 'bg-indigo-700 text-white'
+                          ? 'bg-emerald-800 text-white'
                           : 'bg-slate-100 text-slate-600'
                       )}
                     >

@@ -57,8 +57,8 @@ export default function SubstitutionPage() {
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <ArrowLeftRight className="w-6 h-6 text-indigo-600" />
-            Ders Doldurma (İkame) Yönetimi
+            <ArrowLeftRight className="w-6 h-6 text-orange-600" />
+            <span>Doğa Koleji • İkame Yönetimi</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
             Okulunuzdaki günlük 8 ders saati planına göre boş kalan dersleri nöbetçi ve müsait öğretmenlerle eşleştirin.
@@ -68,7 +68,7 @@ export default function SubstitutionPage() {
         {/* Action Button */}
         <Button
           onClick={() => setIsModalOpen(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 font-medium shadow-md shadow-indigo-600/20"
+          className="bg-orange-600 hover:bg-orange-700 text-white gap-2 font-bold shadow-md shadow-orange-600/20"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Yeni İkame Ata</span>
@@ -111,7 +111,7 @@ export default function SubstitutionPage() {
               variant="outline"
               size="sm"
               onClick={() => setSelectedDate(getTodayString())}
-              className="h-9 text-xs text-indigo-700 bg-indigo-50 border-indigo-200"
+              className="h-9 text-xs font-bold text-emerald-800 bg-emerald-50 border-emerald-300 hover:bg-emerald-100"
             >
               Bugün
             </Button>
@@ -129,11 +129,11 @@ export default function SubstitutionPage() {
               onClick={() => setActiveTab('matrix')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === 'matrix'
-                  ? 'bg-white text-indigo-900 font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <LayoutGrid className="w-3.5 h-3.5 text-indigo-600" />
+              <LayoutGrid className="w-3.5 h-3.5" />
               <span>8 Derslik Matris</span>
             </button>
 
@@ -141,7 +141,7 @@ export default function SubstitutionPage() {
               onClick={() => setActiveTab('list')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === 'list'
-                  ? 'bg-white text-slate-900 font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -153,11 +153,11 @@ export default function SubstitutionPage() {
               onClick={() => setActiveTab('print')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === 'print'
-                  ? 'bg-white text-slate-900 font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Printer className="w-3.5 h-3.5 text-indigo-600" />
+              <Printer className="w-3.5 h-3.5" />
               <span>Nöbetçi Panosu Çıktısı</span>
             </button>
           </div>

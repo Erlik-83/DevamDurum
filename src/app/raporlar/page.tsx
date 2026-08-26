@@ -155,14 +155,14 @@ export default function ReportsPage() {
         </Card>
 
         {/* Substitution Export Card */}
-        <Card className="p-4 border border-indigo-200 bg-indigo-50/40 shadow-sm flex flex-col justify-between">
+        <Card className="p-4 border border-orange-200 bg-orange-50/40 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5">
-                <ArrowLeftRight className="w-4 h-4 text-indigo-700" />
+              <span className="text-xs font-bold text-orange-950 uppercase tracking-wider flex items-center gap-1.5">
+                <ArrowLeftRight className="w-4 h-4 text-orange-700" />
                 İkame & Ek Ders Raporu
               </span>
-              <Badge variant="purple" className="text-[10px]">
+              <Badge variant="secondary" className="text-[10px] bg-orange-100 text-orange-800 border-orange-300 font-bold">
                 {filteredSubs.length} İkame
               </Badge>
             </div>
@@ -174,7 +174,7 @@ export default function ReportsPage() {
           <Button
             onClick={handleExportSubstitutions}
             size="sm"
-            className="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 text-xs font-semibold shadow-sm"
+            className="w-full mt-3 bg-orange-600 hover:bg-orange-700 text-white gap-1.5 text-xs font-bold shadow-sm"
           >
             <Download className="w-4 h-4" />
             <span>İkame Raporunu İndir (.xlsx)</span>
@@ -199,7 +199,7 @@ export default function ReportsPage() {
               onClick={() => setActiveReportTab('attendance')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
                 activeReportTab === 'attendance'
-                  ? 'bg-white text-slate-900 font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -209,7 +209,7 @@ export default function ReportsPage() {
               onClick={() => setActiveReportTab('substitution')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
                 activeReportTab === 'substitution'
-                  ? 'bg-white text-slate-900 font-bold shadow-xs'
+                  ? 'bg-emerald-700 text-white font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >

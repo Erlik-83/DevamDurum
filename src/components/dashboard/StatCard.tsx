@@ -12,7 +12,7 @@ interface StatCardProps {
     value: string;
     isPositive: boolean;
   };
-  colorScheme?: 'indigo' | 'emerald' | 'amber' | 'rose' | 'sky' | 'purple';
+  colorScheme?: 'indigo' | 'emerald' | 'amber' | 'rose' | 'sky' | 'purple' | 'orange' | 'green';
 }
 
 export function StatCard({
@@ -21,44 +21,56 @@ export function StatCard({
   subtitle,
   icon: Icon,
   trend,
-  colorScheme = 'indigo',
+  colorScheme = 'emerald',
 }: StatCardProps) {
   const schemeStyles = {
+    orange: {
+      bg: 'bg-orange-50/80',
+      text: 'text-orange-600',
+      border: 'border-orange-200',
+      glow: 'group-hover:border-orange-400',
+    },
+    green: {
+      bg: 'bg-emerald-50/80',
+      text: 'text-emerald-700',
+      border: 'border-emerald-200',
+      glow: 'group-hover:border-emerald-400',
+    },
     indigo: {
-      bg: 'bg-indigo-50/70',
-      text: 'text-indigo-600',
-      border: 'border-indigo-100',
-      glow: 'group-hover:border-indigo-300',
+      bg: 'bg-emerald-50/80',
+      text: 'text-emerald-700',
+      border: 'border-emerald-200',
+      glow: 'group-hover:border-emerald-400',
     },
     emerald: {
-      bg: 'bg-emerald-50/70',
-      text: 'text-emerald-600',
-      border: 'border-emerald-100',
-      glow: 'group-hover:border-emerald-300',
+      bg: 'bg-emerald-50/80',
+      text: 'text-emerald-700',
+      border: 'border-emerald-200',
+      glow: 'group-hover:border-emerald-400',
     },
     amber: {
-      bg: 'bg-amber-50/70',
+      bg: 'bg-amber-50/80',
       text: 'text-amber-600',
-      border: 'border-amber-100',
-      glow: 'group-hover:border-amber-300',
+      border: 'border-amber-200',
+      glow: 'group-hover:border-amber-400',
     },
     rose: {
-      bg: 'bg-rose-50/70',
+      bg: 'bg-rose-50/80',
       text: 'text-rose-600',
-      border: 'border-rose-100',
-      glow: 'group-hover:border-rose-300',
+      border: 'border-rose-200',
+      glow: 'group-hover:border-rose-400',
     },
     sky: {
-      bg: 'bg-sky-50/70',
+      bg: 'bg-sky-50/80',
       text: 'text-sky-600',
-      border: 'border-sky-100',
-      glow: 'group-hover:border-sky-300',
+      border: 'border-sky-200',
+      glow: 'group-hover:border-sky-400',
     },
     purple: {
-      bg: 'bg-purple-50/70',
+      bg: 'bg-purple-50/80',
       text: 'text-purple-600',
-      border: 'border-purple-100',
-      glow: 'group-hover:border-purple-300',
+      border: 'border-purple-200',
+      glow: 'group-hover:border-purple-400',
     },
   }[colorScheme];
 

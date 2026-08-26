@@ -119,8 +119,8 @@ export default function TeachersPage() {
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <Users className="w-6 h-6 text-indigo-600" />
-            Öğretmen Kadrosu Yönetimi
+            <Users className="w-6 h-6 text-emerald-700" />
+            <span>Doğa Koleji • Öğretmen Kadrosu</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
             Okuldaki tüm öğretmenlerin listesi, branşları, kademeleri ve iletişim/TC bilgileri
@@ -172,7 +172,7 @@ export default function TeachersPage() {
             className="border-slate-300 text-slate-700 bg-white hover:bg-slate-50 gap-1.5 text-xs font-semibold shadow-xs"
             title="Öğretmen yükleme için boş Excel şablonunu bilgisayarınıza indirin"
           >
-            <Download className="w-4 h-4 text-indigo-600" />
+            <Download className="w-4 h-4 text-emerald-700" />
             <span>Boş Excel Şablonu İndir</span>
           </Button>
 
@@ -190,7 +190,7 @@ export default function TeachersPage() {
               setTeacherToEdit(null);
               setIsAddModalOpen(true);
             }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5 text-xs font-semibold shadow-md shadow-indigo-600/20"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 text-xs font-bold shadow-md shadow-emerald-600/20"
           >
             <UserPlus className="w-4 h-4" />
             <span>Yeni Öğretmen Ekle</span>
@@ -221,7 +221,7 @@ export default function TeachersPage() {
                 className={cn(
                   'px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-colors',
                   selectedLevel === lvl
-                    ? 'bg-slate-900 text-white font-semibold shadow-sm'
+                    ? 'bg-emerald-700 text-white font-bold shadow-sm'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 )}
               >
@@ -260,7 +260,7 @@ export default function TeachersPage() {
                 {/* Header: Name, Avatar, Level */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 font-extrabold flex items-center justify-center flex-shrink-0 text-sm shadow-xs">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold flex items-center justify-center flex-shrink-0 text-sm shadow-2xs">
                       {teacher.name
                         .split(' ')
                         .map((n) => n[0])
@@ -279,7 +279,7 @@ export default function TeachersPage() {
 
                   <Badge
                     variant="secondary"
-                    className="text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5"
+                    className="text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5"
                   >
                     {formatTeacherLevel(teacher, scheduleSlots)}
                   </Badge>
@@ -319,9 +319,9 @@ export default function TeachersPage() {
                     <span className="text-[10px] text-amber-700 block font-semibold">Geç</span>
                     <span className="font-bold text-amber-950">{stats.lates} Kez</span>
                   </div>
-                  <div className="bg-indigo-50/70 p-1.5 rounded-lg border border-indigo-100/60">
-                    <span className="text-[10px] text-indigo-700 block font-semibold">İkame</span>
-                    <span className="font-bold text-indigo-950">{stats.subs} Saat</span>
+                  <div className="bg-orange-50/70 p-1.5 rounded-lg border border-orange-200/60">
+                    <span className="text-[10px] text-orange-700 block font-semibold">İkame</span>
+                    <span className="font-bold text-orange-950">{stats.subs} Saat</span>
                   </div>
                 </div>
 
@@ -334,7 +334,7 @@ export default function TeachersPage() {
                       setTeacherToEdit(teacher);
                       setIsAddModalOpen(true);
                     }}
-                    className="h-7 text-xs text-slate-600 hover:text-indigo-600 gap-1 px-2"
+                    className="h-7 text-xs text-slate-600 hover:text-emerald-700 gap-1 px-2"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                     <span>Düzenle</span>

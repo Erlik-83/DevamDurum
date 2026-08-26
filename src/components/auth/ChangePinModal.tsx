@@ -115,7 +115,7 @@ export function ChangePinModal() {
           <Button type="button" variant="outline" size="sm" onClick={handleClose}>
             İptal
           </Button>
-          <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-1.5">
+          <Button type="submit" size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-1.5 shadow-sm shadow-emerald-600/20">
             <ShieldCheck className="w-4 h-4" />
             Yeni PIN'i Kaydet
           </Button>

@@ -54,7 +54,7 @@ export function SubstitutionList({ filterDate }: SubstitutionListProps) {
     <div className="space-y-3">
       {sortedLogs.length === 0 ? (
         <div className="bg-white rounded-xl p-8 text-center border border-slate-200 shadow-sm">
-          <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-3">
+          <div className="w-12 h-12 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-3">
             <ArrowLeftRight className="w-6 h-6" />
           </div>
           <h4 className="text-sm font-semibold text-slate-800">
@@ -78,13 +78,13 @@ export function SubstitutionList({ filterDate }: SubstitutionListProps) {
                 {/* Header: Date, Lesson hour, Class */}
                 <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="bg-indigo-600 text-white font-extrabold text-xs px-2.5 py-1 rounded-lg">
+                    <span className="bg-orange-600 text-white font-extrabold text-xs px-2.5 py-1 rounded-lg shadow-2xs">
                       {sub.lessonHour}. Ders
                     </span>
                     <span className="text-[11px] text-slate-500 font-medium">
                       ({DAILY_LESSON_PERIODS[sub.lessonHour - 1]?.timeRange || ''})
                     </span>
-                    <Badge variant="purple" className="font-bold text-xs">
+                    <Badge variant="secondary" className="font-bold text-xs bg-emerald-50 text-emerald-800 border-emerald-200">
                       {sub.classInfo}
                     </Badge>
                   </div>
@@ -111,7 +111,7 @@ export function SubstitutionList({ filterDate }: SubstitutionListProps) {
 
                   {/* Sub */}
                   <div>
-                    <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block mb-0.5">
+                    <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block mb-0.5">
                       Dersi Dolduran
                     </span>
                     <p className="font-semibold text-slate-900 truncate">
@@ -132,7 +132,7 @@ export function SubstitutionList({ filterDate }: SubstitutionListProps) {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setEditingSub(sub)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
                       title="Düzenle"
                     >
                       <Edit2 className="w-3.5 h-3.5" />

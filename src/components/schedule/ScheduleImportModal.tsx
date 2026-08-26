@@ -371,10 +371,10 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
     >
       <div className="space-y-4">
         {/* Info Box */}
-        <div className="p-3.5 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs text-indigo-950 space-y-1.5">
+        <div className="p-3.5 bg-emerald-50/70 border border-emerald-100 rounded-xl text-xs text-emerald-950 space-y-1.5">
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 font-bold text-indigo-900">
-              <Sparkles className="w-4 h-4 text-indigo-600 flex-shrink-0" />
+            <div className="flex items-center gap-2 font-bold text-emerald-900">
+              <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
               <span>Aynı Anda Çoklu Dosya & Akıllı Harf Hatası Kontrolü:</span>
             </div>
             <Button
@@ -382,13 +382,13 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
               variant="outline"
               size="sm"
               onClick={() => downloadScheduleTemplate(teachers)}
-              className="flex-shrink-0 bg-white hover:bg-indigo-50 text-indigo-700 border-indigo-200 text-xs h-7 gap-1.5"
+              className="flex-shrink-0 bg-white hover:bg-emerald-50 text-emerald-800 border-emerald-300 text-xs h-7 gap-1.5 font-bold"
             >
               <Download className="w-3.5 h-3.5" />
               Örnek Excel Şablonu
             </Button>
           </div>
-          <p className="text-[11px] text-indigo-800 leading-relaxed">
+          <p className="text-[11px] text-emerald-800 leading-relaxed">
             • Birden fazla <strong>.PDF, .XLSX, .XLS, .CSV</strong> dosyasını birlikte seçebilirsiniz.<br />
             • Dosyadaki isimlerle sistemdeki isimler arasındaki harf farkları (Örn: <em>Berfin Yağcı</em> vs <em>Berfin Yağci</em>) otomatik algılanır ve onayınıza sunulur.
           </p>
@@ -419,8 +419,8 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
           onClick={() => fileInputRef.current?.click()}
           className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2.5 ${
             isDragging
-              ? 'border-indigo-500 bg-indigo-50/50 scale-[0.99]'
-              : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50/50'
+              ? 'border-emerald-500 bg-emerald-50/50 scale-[0.99]'
+              : 'border-slate-300 hover:border-emerald-400 hover:bg-slate-50/50'
           }`}
         >
           <input
@@ -431,7 +431,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
             className="hidden"
             onChange={handleFileChange}
           />
-          <div className="w-12 h-12 rounded-2xl bg-indigo-100/70 text-indigo-600 flex items-center justify-center shadow-inner">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-700 flex items-center justify-center shadow-inner">
             {processedFiles.length > 0 ? (
               <Files className="w-6 h-6" />
             ) : (
@@ -458,7 +458,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
             {/* Header with Total Summary */}
             <div className="flex items-center justify-between pb-2 border-b border-slate-200/80">
               <div className="flex items-center gap-2 font-bold text-slate-900">
-                <Files className="w-4 h-4 text-indigo-600" />
+                <Files className="w-4 h-4 text-emerald-700" />
                 <span>Yüklenen Dosyalar ({processedFiles.length} Dosya)</span>
               </div>
               <div className="flex items-center gap-2">
@@ -547,7 +547,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
                               Dosyadaki İsim: <strong>{item.rawName}</strong>
                             </span>
                             <ArrowRight className="w-3.5 h-3.5 text-amber-600" />
-                            <span className="font-bold text-indigo-900 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">
+                            <span className="font-bold text-emerald-900 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
                               Sistemdeki Kayıt: <strong>{best.teacher.name}</strong>
                             </span>
                           </div>
@@ -565,7 +565,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
                               checked={isMatchedToExisting}
                               onChange={() =>
                                 setTeacherMappingOverrides((prev) => ({
-                                  ...prev,
+                                   ...prev,
                                   [item.rawName]: best.teacher.id,
                                 }))
                               }
@@ -585,7 +585,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
                                   [item.rawName]: 'NEW',
                                 }))
                               }
-                              className="text-indigo-600 focus:ring-indigo-500"
+                              className="text-emerald-600 focus:ring-emerald-500"
                             />
                             <span>Farklı Öğretmen Olarak Yeni Ekle</span>
                           </label>
@@ -621,7 +621,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
                         className="flex items-center justify-between p-1.5 rounded bg-slate-50 border border-slate-100 text-[11px]"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="w-4.5 h-4.5 rounded bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-[9px]">
+                          <span className="w-4.5 h-4.5 rounded bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-[9px]">
                             {idx + 1}
                           </span>
                           <span className="font-bold text-slate-900">{p.teacherName}</span>
@@ -633,7 +633,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
                           )}
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                             {p.inferredLevel}
                           </span>
                           <Badge variant="secondary" className="text-[9px] py-0">
@@ -677,7 +677,7 @@ export function ScheduleImportModal({ isOpen, onClose }: ScheduleImportModalProp
               <Button
                 type="button"
                 onClick={handleConfirmImport}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md font-bold"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md font-bold shadow-emerald-600/20"
               >
                 Tüm Dosyaları Sisteme Aktar ({successfulFiles.length} Dosya)
               </Button>

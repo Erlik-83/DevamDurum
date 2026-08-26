@@ -138,15 +138,15 @@ export function TeacherModal({ isOpen, onClose, teacherToEdit }: TeacherModalPro
             Kademesi <span className="text-rose-500">*</span>
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {SCHOOL_LEVELS.map((lvl) => (
+            {(['Anaokulu', 'İlkokul', 'Ortaokul', 'Lise'] as SchoolLevel[]).map((lvl) => (
               <button
                 key={lvl}
                 type="button"
                 onClick={() => setLevel(lvl)}
-                className={`py-2 px-3 text-xs font-medium rounded-lg border transition-all ${
+                className={`py-2 px-3 rounded-lg text-xs font-semibold border transition-all ${
                   level === lvl
-                    ? 'bg-indigo-50 border-indigo-600 text-indigo-700 font-bold shadow-sm'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'bg-emerald-700 text-white border-emerald-700 shadow-sm'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
                 {lvl}
@@ -163,7 +163,7 @@ export function TeacherModal({ isOpen, onClose, teacherToEdit }: TeacherModalPro
           <select
             value={branch}
             onChange={(e) => setBranch(e.target.value)}
-            className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             {BRANCH_LIST.map((b) => (
               <option key={b} value={b}>
@@ -222,7 +222,7 @@ export function TeacherModal({ isOpen, onClose, teacherToEdit }: TeacherModalPro
           <Button type="button" variant="outline" onClick={onClose}>
             İptal
           </Button>
-          <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-sm shadow-emerald-600/20">
             {teacherToEdit ? 'Değişiklikleri Kaydet' : 'Öğretmeni Ekle'}
           </Button>
         </div>

@@ -45,8 +45,8 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-50/80 border border-indigo-100 text-indigo-900 text-xs font-semibold">
-          <Calendar className="w-3.5 h-3.5 text-indigo-600" />
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50/90 border border-emerald-200 text-emerald-950 text-xs font-bold">
+          <Calendar className="w-3.5 h-3.5 text-emerald-600" />
           <span>Bugün: {isClient ? formatDateTurkish(today) : ''}</span>
         </div>
 
@@ -99,9 +99,9 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
           onClick={() => setIsSubModalOpen(true)}
           variant="outline"
           size="sm"
-          className="inline-flex items-center gap-1.5 border-indigo-200 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100/70 font-medium"
+          className="inline-flex items-center gap-1.5 border-orange-300 text-orange-800 bg-orange-50/70 hover:bg-orange-100 font-bold shadow-2xs"
         >
-          <ArrowLeftRight className="w-4 h-4 text-indigo-600" />
+          <ArrowLeftRight className="w-4 h-4 text-orange-600" />
           <span className="hidden sm:inline">İkame Ata</span>
           <span className="sm:hidden">İkame</span>
         </Button>
@@ -109,7 +109,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         <Button
           onClick={() => setIsTeacherModalOpen(true)}
           size="sm"
-          className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-sm shadow-indigo-600/20"
+          className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-sm shadow-emerald-600/20"
         >
           <UserPlus className="w-4 h-4" />
           <span className="hidden sm:inline">Yeni Öğretmen</span>
@@ -122,7 +122,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
             variant="ghost"
             size="sm"
             onClick={() => setIsPinModalOpen(true)}
-            className="p-2 h-8 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg"
+            className="p-2 h-8 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg"
             title="Okul Yönetici PIN Kodunu Değiştir"
           >
             <KeyRound className="w-4 h-4" />
